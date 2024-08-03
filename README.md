@@ -1,61 +1,78 @@
-# Blogger Platform - Sprint 3, Week 4
+# Blogger Platform - Sprint 4, Week 2
 
 ## Overview
 
-This sprint focuses on implementing the functionality to display likes and dislikes on posts within the Blogger Platform. Authenticated users will have the ability to like or dislike posts. This enhancement involves both frontend and backend development to ensure a seamless user experience.
+This sprint focuses on continuing the migration of the application to NestJS. The primary goals are to complete the authentication block and implement CRUD operations for users with basic authentication.
 
-## User Story: UC-1. Displaying Likes/Dislikes on Posts
+## Tasks:
 
-### Frontend Implementation
+1. **Continue Migration to NestJS:**
+   - Further transition the application to the NestJS framework.
 
-**Functionalities to Implement:**
+2. **Implement Authentication Block:**
+   - Implement password recovery.
+   - Implement user registration.
+   - Implement user login (excluding refreshToken flow).
 
-1. **Displaying Likes/Dislikes for Posts:**
-   - Authenticated users can see the number of likes (thumbs up) and dislikes (thumbs down) on each post.
-   - Authenticated users can like or dislike a post.
+3. **Implement CRUD Operations for Users:**
+   - Ensure CRUD operations for users are functional with basic authentication.
 
-2. **Displaying the Last Three Users Who Liked a Post:**
-   - The system displays the usernames of the last three users who liked the post.
+### Implementation Details:
 
-**Design:**
-- Sprint: 3
-- Project: Blogger Platform
+**1. Continuing Migration to NestJS:**
+   - Continue setting up and migrating the existing project framework to NestJS.
+   - Ensure compatibility and functionality during the migration process.
 
-### Backend Implementation
+**2. Implementing Authentication Block:**
+   - **Password Recovery:**
+     - Implement the functionality to recover a user's password.
+   - **User Registration:**
+     - Implement user registration functionality.
+   - **User Login:**
+     - Implement user login functionality, excluding the refreshToken flow.
 
-**Endpoint Creation:**
-- **PUT** - `api/posts/{postId}/like-status`
-   - This endpoint handles the functionality to update the like or dislike status for a specific post.
-   - Refer to the Swagger API documentation (h12 API) for detailed information.
+**3. Implementing CRUD Operations for Users with Basic Authentication:**
+   - **Create User:**
+     - Implement the functionality to create a new user.
+   - **Read User:**
+     - Implement the functionality to retrieve user details.
+   - **Update User:**
+     - Implement the functionality to update user information.
+   - **Delete User:**
+     - Implement the functionality to delete a user.
+   - Ensure these operations require basic authentication.
 
-### Use Case: UC-1. Displaying Likes/Dislikes on Posts
+### Testing:
 
-**Description:**
-As an authenticated user, I want to like or dislike a post to express my emotions.
+- Implement new tests to validate the authentication block.
+- Develop and run tests to ensure the correct functionality of CRUD operations for users with basic authentication.
 
-**Scenario:**
+### Test Cases:
 
-**Main Scenario:**
-1. The authenticated user is on the page of a selected post.
-2. The authenticated user can see the number of likes (thumbs up) and dislikes (thumbs down) on the post.
-3. The system displays the usernames of the last three users who liked the post.
-4. The authenticated user likes the post.
-5. The system updates the number of likes, the display of the last three usernames, and highlights the "Like" attribute.
-   - The user sees their like, which they placed on the post (the attribute is highlighted).
+1. **Password Recovery:**
+   - Test the password recovery process.
+   - Ensure users can recover their passwords successfully.
 
-**Alternative Scenario:**
-1. Steps 1-2 of the main scenario.
-2. The authenticated user dislikes the post.
-3. The system updates the number of dislikes and highlights the "Dislike" attribute.
-   - The user sees their dislike, which they placed on the post (the attribute is highlighted).
+2. **User Registration:**
+   - Test the user registration process.
+   - Ensure new users can register successfully.
 
-**Notes:**
-- Ensure that only authenticated users can like or dislike posts.
-- The UI should clearly indicate which posts have been liked or disliked by the user.
-- The backend should handle the like/dislike logic and update the post status accordingly.
-- Refer to the Swagger API documentation for detailed endpoint usage and parameters.
-- For this migration step, you shouldn't migrate the following functionalities:
-  - Entire auth flow (including devices), basic auth, and bearer auth.
-  - Validation.
-  - Create/update/delete for comments (because these operations require bearer auth), but read requests should work for comments already in the DB.
-  - Create/update/delete for likes for comments and for posts (because these operations require bearer auth). But read requests should work for likes already in the DB when we read posts and comments.
+3. **User Login:**
+   - Test the user login process.
+   - Ensure users can log in successfully without the refreshToken flow.
+
+4. **CRUD Users with Basic Authentication:**
+   - **Create User:**
+     - Test creating a new user with basic authentication.
+   - **Read User:**
+     - Test retrieving user details with basic authentication.
+   - **Update User:**
+     - Test updating user information with basic authentication.
+   - **Delete User:**
+     - Test deleting a user with basic authentication.
+
+### Notes:
+
+- The focus is on ensuring functionality with basic authentication.
+- New tests will be crucial in verifying that the migration to NestJS and implementation of the authentication block do not affect the core functionalities.
+- Refer to the NestJS documentation and best practices for efficient implementation and testing.
