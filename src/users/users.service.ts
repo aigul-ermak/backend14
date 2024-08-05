@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { User } from './users.schema';
 import * as bcrypt from 'bcrypt';
 
