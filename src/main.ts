@@ -1,9 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import {appSettings} from './settings/app.setting';
-import {applyAppSettings} from "./settings/apply.app.setting";
-
-
+import { appSettings } from './settings/app.setting';
+import { applyAppSettings } from './settings/apply.app.setting';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,5 +15,3 @@ async function bootstrap() {
 }
 
 bootstrap();
-
-

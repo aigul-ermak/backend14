@@ -22,7 +22,8 @@
     "noFallthroughCasesInSwitch": false
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "src/env.d.ts"
   ],
   "exclude": [
     "node_modules"
