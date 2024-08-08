@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Blog, BlogDocument } from '../features/blogs/blogs.schema';
-import { User, UserDocument } from '../features/users/users.schema';
-import { Post, PostDocument } from '../features/posts/posts.schema';
+import { Blog, BlogDocument } from '../blogs/blogs.schema';
+import { User, UserDocument } from '../users/domain/users.entity';
+import { Post, PostDocument } from '../posts/posts.schema';
 
 @Injectable()
 export class TestingService {
