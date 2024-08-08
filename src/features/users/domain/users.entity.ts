@@ -30,9 +30,9 @@ export class User {
   }
 }
 
-export const UsersSchema = SchemaFactory.createForClass(User);
+export const UsersEntity = SchemaFactory.createForClass(User);
 
-UsersSchema.pre<UserDocument>('save', async function (next) {
+UsersEntity.pre<UserDocument>('save', async function (next) {
   if (this.isModified('password') || this.isNew) {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
