@@ -3,9 +3,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { TestingController } from './testing-controller';
 import { TestingService } from './testing-service';
-import { Blog, BlogsSchema } from '../blogs/blogs.schema';
-import { Post, PostsSchema } from '../posts/posts.schema';
-import { User, UsersSchema } from '../users/users.schema';
+import { Blog, BlogsSchema } from '../features/blogs/blogs.schema';
+import { Post, PostsSchema } from '../features/posts/posts.schema';
+import { User, UsersSchema } from '../features/users/users.schema';
 
 @Module({
   imports: [

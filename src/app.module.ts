@@ -10,25 +10,27 @@ import { MongooseModule } from '@nestjs/mongoose';
 // import { TestingModule } from './testing/testing-module';
 // import { PostsModule } from './posts/posts.module';
 // import { BlogsModule } from './blogs/blogs.module';
-import { UsersRepository } from './users/users.repo';
-import { UsersService } from './users/users.service';
+import { UsersRepository } from './features/users/users.repo';
+import { UsersService } from './features/users/users.service';
 import { appSettings } from './settings/app.setting';
-import { User, UsersSchema } from './users/users.schema';
-import { UsersController } from './users/users.controller';
-import { LoggerMiddleware } from './middleware/logger.middleware';
+import { User, UsersSchema } from './features/users/users.schema';
+import { UsersController } from './features/users/users.controller';
+import { LoggerMiddleware } from './infrastructure/middlewares/logger.middleware';
+import {UsersModule} from "./features/users/users.module";
 
 const usersProviders: Provider[] = [UsersRepository, UsersService];
 
 @Module({
   imports: [
-    // MongooseModule.forRoot(process.env.MONGO_CONNECTION_URI as string),
+    //MongooseModule.forRoot(process.env.MONGO_CONNECTION_URI as string),
     // DatabaseModule,
-    // UsersModule,
+    //UsersModule,
     // TestingModule,
     // PostsModule,
     // BlogsModule,
     MongooseModule.forRoot(appSettings.api.MONGO_CONNECTION_URI),
     MongooseModule.forFeature([{ name: User.name, schema: UsersSchema }]),
+
   ],
   providers: [...usersProviders],
   controllers: [UsersController],

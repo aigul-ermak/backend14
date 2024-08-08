@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { appSettings } from './app.setting';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { HttpExceptionFilter } from '../exception-filters/http.exception.filters';
+import { HttpExceptionFilter } from '../infrastructure/exception-filters/http.exception.filters';
 
 // Префикс нашего приложения (http://site.com/api)
 const APP_PREFIX = '/api';
