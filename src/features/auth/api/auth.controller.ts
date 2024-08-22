@@ -52,7 +52,7 @@ export class AuthController {
     @Get('/me')
     async getUser(
         @Body()
-            loginUserDto: loginUserDto) {
+            UserDto: loginUserDto) {
 
     }
 }
