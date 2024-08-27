@@ -10,24 +10,32 @@ import {
     Query,
 } from '@nestjs/common';
 import {UsersService} from '../application/users.service';
+import {UsersRepository} from "../infrastructure/users.repo";
+import {UserCreateModel} from "./models/input/create-user.input.model";
+import {UserOutputModel} from "./models/output/user.output.model";
 
 @Controller('users')
 export class UsersController {
     userService: UsersService;
 
-    constructor(userService: UsersService) {
+    constructor(
+        userService: UsersService,
+        private readonly userRepository: UsersRepository,
+    ) {
         this.userService = userService;
     }
 
     @Post()
+    @HttpCode(200)
     async create(
-        @Body() createUserDto: { email: string; login: string; password: string },
-    ): Promise<{ id: string; login: string; email: string; createdAt: Date }> {
-        return this.userService.create(
+        @Body() createUserDto: UserCreateModel,
+    ): Promise<UserOutputModel> {
+        const result =  await  this.userService.create(
             createUserDto.email,
             createUserDto.login,
             createUserDto.password,
         );
+        return await this.userRepository.getById(result);
     }
 
     @Get()

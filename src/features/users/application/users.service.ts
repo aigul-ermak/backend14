@@ -3,6 +3,7 @@ import { User } from '../domain/users.entity';
 import * as bcrypt from 'bcrypt';
 
 import { UsersRepository } from '../infrastructure/users.repo';
+import {UserOutputModel} from "../api/models/output/user.output.model";
 
 @Injectable()
 export class UsersService {
@@ -10,7 +11,7 @@ export class UsersService {
 
   async create(
     email: string,
-    name: string,
+    login: string,
     password: string,
   ): Promise<{ id: string; login: string; email: string; createdAt: Date }> {
     // const existingUser = await this.userRepo.findOne(email);
@@ -18,9 +19,12 @@ export class UsersService {
     //   throw new ConflictException(`Blog with name "${name}" already exists`);
     // }
 
+    // email send message
+    // this.emailAdapter.send(message);
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = User.create(name, email, hashedPassword);
+    const user = User.create(login, email, hashedPassword);
     const createdUser = await this.usersRepository.create(user);
 
     return {
@@ -30,6 +34,10 @@ export class UsersService {
       createdAt: createdUser.createdAt,
     };
   }
+
+  // async getById(userId: string): Promise<UserOutputModel | null> {
+  //   return this.usersRepository.getById(userId);
+  // }
 
   async validateUser(email: string, password: string): Promise<User | null> {
     const user = await this.usersRepository.findOne(email);
