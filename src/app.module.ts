@@ -23,9 +23,10 @@ import {BlogsModule} from "./features/blogs/blogs.module";
 import { AuthModule } from './features/auth/auth.module';
 import { AuthController } from './features/auth/api/auth.controller';
 import { AuthService } from './features/auth/application/auth.service';
+import {UsersQueryRepository} from "./features/users/infrastructure/users.query-repository";
 
 
-const usersProviders: Provider[] = [UsersRepository, UsersService];
+const usersProviders: Provider[] = [UsersRepository,UsersQueryRepository, UsersService];
 
 @Module({
     imports: [
