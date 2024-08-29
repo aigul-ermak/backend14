@@ -28,7 +28,7 @@ export class UsersService {
     const createdUser = await this.usersRepository.create(user);
 
     return {
-      id: createdUser._id.toString(),
+      id: createdUser.id.toString(),
       login: createdUser.login,
       email: createdUser.email,
       createdAt: createdUser.createdAt,
@@ -73,7 +73,7 @@ export class UsersService {
     );
 
     const mappedUsers = users.map((user) => ({
-      id: user._id.toString(),
+      // id: user.id,
       login: user.login,
       email: user.email,
       createdAt: user.createdAt,
