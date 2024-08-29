@@ -24,16 +24,6 @@ export class UsersRepository {
         return createdUser.save();
     }
 
-    async getById(userId: string): Promise<UserOutputModel | null> {
-        const user = await this.userModel.findById(userId).exec();
-
-        if (!user) {
-            return null;
-        }
-
-        return UserOutputModelMapper(user);
-    }
-
     async findOne(email: string): Promise<User | null> {
         return this.userModel.findOne({email}).exec();
     }

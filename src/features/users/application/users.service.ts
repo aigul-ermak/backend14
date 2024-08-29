@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from '../domain/users.entity';
 import * as bcrypt from 'bcrypt';
 
-import { UsersRepository } from '../infrastructure/users.repo';
+import { UsersRepository } from '../infrastructure/users.repository';
 import {UserOutputModel} from "../api/models/output/user.output.model";
 
 @Injectable()

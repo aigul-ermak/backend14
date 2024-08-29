@@ -10,9 +10,10 @@ import {
     Query,
 } from '@nestjs/common';
 import {UsersService} from '../application/users.service';
-import {UsersRepository} from "../infrastructure/users.repo";
+import {UsersRepository} from "../infrastructure/users.repository";
 import {UserCreateModel} from "./models/input/create-user.input.model";
 import {UserOutputModel} from "./models/output/user.output.model";
+import {UsersQueryRepository} from "../infrastructure/users.query-repository";
 
 @Controller('users')
 export class UsersController {
@@ -20,7 +21,7 @@ export class UsersController {
 
     constructor(
         userService: UsersService,
-        private readonly userRepository: UsersRepository,
+        private readonly usersQueryRepository: UsersQueryRepository,
     ) {
         this.userService = userService;
     }
@@ -37,7 +38,7 @@ export class UsersController {
             createUserDto.password,
         );
 
-        const user = await this.userRepository.getById(result!.id);
+        const user = await this.usersQueryRepository.getById(result!.id);
 
         if (!user) {
             throw new Error('User not found');

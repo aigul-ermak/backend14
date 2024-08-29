@@ -10,7 +10,7 @@ import {MongooseModule} from '@nestjs/mongoose';
 // import { TestingModule } from './testing/testing-module';
 // import { PostsModule } from './posts/posts.module';
 // import { BlogsModule } from './blogs/blogs.module';
-import {UsersRepository} from './features/users/infrastructure/users.repo';
+import {UsersRepository} from './features/users/infrastructure/users.repository';
 import {UsersService} from './features/users/application/users.service';
 import {appSettings} from './settings/app.setting';
 import {User, UsersEntity} from './features/users/domain/users.entity';
