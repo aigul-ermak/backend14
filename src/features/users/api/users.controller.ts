@@ -30,12 +30,20 @@ export class UsersController {
     async create(
         @Body() createUserDto: UserCreateModel,
     ): Promise<UserOutputModel> {
+
         const result =  await  this.userService.create(
             createUserDto.email,
             createUserDto.login,
             createUserDto.password,
         );
-        return await this.userRepository.getById(result);
+
+        const user = await this.userRepository.getById(result!.id);
+
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        return user;
     }
 
     @Get()
