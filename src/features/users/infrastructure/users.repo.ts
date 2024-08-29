@@ -19,7 +19,7 @@ export class UsersRepository {
         }
     }
 
-    async create(user: User): Promise<User> {
+    async create(user: User): Promise<UserDocument> {
         const createdUser = new this.userModel(user);
         return createdUser.save();
     }
