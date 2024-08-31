@@ -26,6 +26,7 @@ import { AuthService } from './features/auth/application/auth.service';
 import {UsersQueryRepository} from "./features/users/infrastructure/users.query-repository";
 
 
+
 const usersProviders: Provider[] = [UsersRepository,UsersQueryRepository, UsersService];
 
 @Module({

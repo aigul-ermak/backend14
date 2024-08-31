@@ -3,6 +3,7 @@ import {UsersService} from "../../users/application/users.service";
 import {UsersQueryRepository} from "../../users/infrastructure/users.query-repository";
 import {AuthService} from "../application/auth.service";
 import {AuthGuard} from "@nestjs/passport";
+import {LocalAuthGuard} from "../local-auth.guard";
 
 
 @Controller('auth')
@@ -11,14 +12,13 @@ export class AuthController {
 
     constructor(
         private authService: AuthService,
-        //userService: UsersService,
         private readonly usersQueryRepository: UsersQueryRepository,
     ) {
         this.authService = authService;
     }
 
     //@HttpCode(HttpStatus.OK)
-    @UseGuards(AuthGuard('local'))
+    @UseGuards(LocalAuthGuard)
     @Post('/login')
     async login(@Req() req) {
         return this.authService.login(req.user);
