@@ -21,7 +21,7 @@ export class AuthService {
         if (!user) {
             throw new BadRequestException('User not found');
         }
-        const isMatch: boolean = bcrypt.compareSync(password, user.password);
+        const isMatch = bcrypt.compare(password, user.password);
         if (!isMatch) {
             throw new BadRequestException('Password does not match');
         }
