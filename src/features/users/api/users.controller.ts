@@ -10,7 +10,6 @@ import {
     Query,
 } from '@nestjs/common';
 import {UsersService} from '../application/users.service';
-import {UsersRepository} from "../infrastructure/users.repository";
 import {UserCreateModel} from "./models/input/create-user.input.model";
 import {UserOutputModel} from "./models/output/user.output.model";
 import {UsersQueryRepository} from "../infrastructure/users.query-repository";

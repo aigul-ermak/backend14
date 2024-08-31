@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {ConflictException, Injectable} from '@nestjs/common';
 import { User } from '../domain/users.entity';
 import * as bcrypt from 'bcrypt';
 
 import { UsersRepository } from '../infrastructure/users.repository';
-import {UserOutputModel} from "../api/models/output/user.output.model";
+
 
 @Injectable()
 export class UsersService {
@@ -14,10 +14,10 @@ export class UsersService {
     login: string,
     password: string,
   ): Promise<{ id: string; login: string; email: string; createdAt: Date }> {
-    // const existingUser = await this.userRepo.findOne(email);
-    // if (existingUser) {
-    //   throw new ConflictException(`Blog with name "${name}" already exists`);
-    // }
+     const existingUser = await this.usersRepository.findOne(email);
+    if (existingUser) {
+      throw new ConflictException(`Blog with name "${name}" already exists`);
+    }
 
     // email send message
     // this.emailAdapter.send(message);
@@ -49,6 +49,14 @@ export class UsersService {
 
   async findAll(): Promise<User[]> {
     return this.usersRepository.findAll();
+  }
+
+  async findOneByEmail(email: string): Promise<User | null> {
+    const user = await this.usersRepository.findOne(email);
+    if (user)  {
+      return user;
+    }
+    return null;
   }
 
   async deleteUserById(id: string): Promise<boolean> {
