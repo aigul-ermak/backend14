@@ -6,9 +6,13 @@ import {
 import { appSettings } from './app.setting';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HttpExceptionFilter } from '../infrastructure/exception-filters/http.exception.filters';
+import {AppModule} from "../app.module";
+import {useContainer} from "class-validator";
 
 // Префикс нашего приложения (http://site.com/api)
 const APP_PREFIX = '/api';
+
+
 
 // Используем данную функцию в main.ts и в e2e тестах
 export const applyAppSettings = (app: INestApplication) => {
@@ -26,6 +30,8 @@ export const applyAppSettings = (app: INestApplication) => {
   //setAppPipes(app);
   // Применение глобальных exceptions filters
   //setAppExceptionsFilters(app);
+
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 };
 
 // const setAppPrefix = (app: INestApplication) => {
@@ -49,33 +55,33 @@ export const applyAppSettings = (app: INestApplication) => {
 //   }
 // };
 
-// const setAppPipes = (app: INestApplication) => {
-//   app.useGlobalPipes(
-//     new ValidationPipe({
-//       // Для работы трансформации входящих данных
-//       transform: true,
-//       // Выдавать первую ошибку для каждого поля
-//       stopAtFirstError: true,
-//       // Перехватываем ошибку, кастомизируем её и выкидываем 400 с собранными данными
-//       exceptionFactory: (errors) => {
-//         const customErrors = [];
-//
-//         errors.forEach((e) => {
-//           const constraintKeys = Object.keys(e.constraints);
-//
-//           constraintKeys.forEach((cKey) => {
-//             const msg = e.constraints[cKey];
-//
-//             customErrors.push({ key: e.property, message: msg });
-//           });
-//         });
-//
-//         // Error 400
-//         throw new BadRequestException(customErrors);
-//       },
-//     }),
-//   );
-// };
+const setAppPipes = (app: INestApplication) => {
+  app.useGlobalPipes(
+      new ValidationPipe()
+    // new ValidationPipe({
+    //   transform: true,
+    //   stopAtFirstError: true,
+
+      // exceptionFactory: (errors) => {
+      //   const customErrors = [];
+      //
+      //   errors.forEach((e) => {
+      //     const constraintKeys = Object.keys(e.constraints);
+      //
+      //     constraintKeys.forEach((cKey) => {
+      //       const msg = e.constraints[cKey];
+      //
+      //       customErrors.push({ key: e.property, message: msg });
+      //     });
+      //   });
+      //
+      //   // Error 400
+      //   throw new BadRequestException(customErrors);
+      // },
+    // }
+    // ),
+  );
+};
 
 // const setAppExceptionsFilters = (app: INestApplication) => {
 //   app.useGlobalFilters(new HttpExceptionFilter());
