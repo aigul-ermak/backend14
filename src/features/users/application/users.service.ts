@@ -3,6 +3,7 @@ import { User } from '../domain/users.entity';
 import * as bcrypt from 'bcrypt';
 
 import { UsersRepository } from '../infrastructure/users.repository';
+import {UserOutputModelMapper} from "../api/models/output/user.output.model";
 
 
 @Injectable()
@@ -87,12 +88,14 @@ export class UsersService {
       searchEmail,
     );
 
-    const mappedUsers = users.map((user) => ({
-      // id: user.id,
-      login: user.login,
-      email: user.email,
-      createdAt: user.createdAt,
-    }));
+    const mappedUsers = users.map(UserOutputModelMapper);
+
+    // const mappedUsers = users.map((user) => ({
+    //   id: user._id.toString(),
+    //   login: user.login,
+    //   email: user.email,
+    //   createdAt: user.createdAt,
+    // }));
 
     return {
       users: mappedUsers,
