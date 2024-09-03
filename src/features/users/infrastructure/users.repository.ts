@@ -2,7 +2,6 @@ import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {User, UserDocument} from '../domain/users.entity';
 import {Model, SortOrder} from 'mongoose';
-import {UserOutputModel, UserOutputModelMapper} from "../api/models/output/user.output.model";
 
 @Injectable()
 export class UsersRepository {
@@ -75,9 +74,6 @@ export class UsersRepository {
         if (filter.$or.length === 0) {
             delete filter.$or;
         }
-
-        console.log('Search Filters:', filter);
-        console.log('Sort Option:', sortOption);
 
         const [users, totalCount] = await Promise.all([
             this.userModel
