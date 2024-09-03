@@ -24,8 +24,12 @@ export class UsersRepository {
         return createdUser.save();
     }
 
-    async findOne(email: string): Promise<User | null> {
+    async findOneByEmail(email: string): Promise<User | null> {
         return this.userModel.findOne({email}).exec();
+    }
+
+    async findOneByLogin(login: string): Promise<User | null> {
+        return this.userModel.findOne({login}).exec();
     }
 
     async findAll(): Promise<User[]> {

@@ -16,8 +16,15 @@ export class AuthService {
     ) {
     }
 
-    async validateUser(email: string, password: string): Promise<User> {
-        const user: User | null = await this.usersService.findOneByEmail(email);
+    async validateUser(loginOrEmail: string, password: string): Promise<User> {
+        let user: User | null = null;
+
+        user = await this.usersService.findOneByEmail(loginOrEmail);
+
+        if (!user) {
+            user = await this.usersService.findOneByLogin(loginOrEmail);
+        }
+
         if (!user) {
             throw new BadRequestException('User not found');
         }

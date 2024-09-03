@@ -14,11 +14,10 @@ export class UsersService {
     login: string,
     password: string,
   ): Promise<{ id: string; login: string; email: string; createdAt: Date }> {
-     const existingUser = await this.usersRepository.findOne(email);
+     const existingUser = await this.usersRepository.findOneByEmail(email);
     if (existingUser) {
       throw new ConflictException(`Blog with name "${name}" already exists`);
     }
-
     // email send message
     // this.emailAdapter.send(message);
 
@@ -40,7 +39,7 @@ export class UsersService {
   // }
 
   async validateUser(email: string, password: string): Promise<User | null> {
-    const user = await this.usersRepository.findOne(email);
+    const user = await this.usersRepository.findOneByEmail(email);
     if (user && (await bcrypt.compare(password, user.password))) {
       return user;
     }
@@ -52,7 +51,15 @@ export class UsersService {
   }
 
   async findOneByEmail(email: string): Promise<User | null> {
-    const user = await this.usersRepository.findOne(email);
+    const user = await this.usersRepository.findOneByEmail(email);
+    if (user)  {
+      return user;
+    }
+    return null;
+  }
+
+  async findOneByLogin(login: string): Promise<User | null> {
+    const user = await this.usersRepository.findOneByLogin(login);
     if (user)  {
       return user;
     }
