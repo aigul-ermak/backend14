@@ -26,7 +26,7 @@ export class UsersController {
     }
 
     @Post()
-    @HttpCode(200)
+    @HttpCode(201)
     async create(
         @Body() createUserDto: UserCreateModel,
     ): Promise<UserOutputModel> {
