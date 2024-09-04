@@ -27,8 +27,8 @@ export const applyAppSettings = (app: INestApplication) => {
   // Конфигурация swagger документации
   //setSwagger(app);
   // Применение глобальных pipes
-  //setAppPipes(app);
-  // Применение глобальных exceptions filters
+  setAppPipes(app);
+  //Применение глобальных exceptions filters
   //setAppExceptionsFilters(app);
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
@@ -57,29 +57,30 @@ export const applyAppSettings = (app: INestApplication) => {
 
 const setAppPipes = (app: INestApplication) => {
   app.useGlobalPipes(
-      new ValidationPipe()
-    // new ValidationPipe({
-    //   transform: true,
-    //   stopAtFirstError: true,
+    new ValidationPipe({
+      transform: true,
+      stopAtFirstError: true,
 
-      // exceptionFactory: (errors) => {
-      //   const customErrors = [];
-      //
-      //   errors.forEach((e) => {
-      //     const constraintKeys = Object.keys(e.constraints);
-      //
-      //     constraintKeys.forEach((cKey) => {
-      //       const msg = e.constraints[cKey];
-      //
-      //       customErrors.push({ key: e.property, message: msg });
-      //     });
-      //   });
-      //
-      //   // Error 400
-      //   throw new BadRequestException(customErrors);
-      // },
-    // }
-    // ),
+      exceptionFactory: (errors) => {
+        const customErrors: any = [];
+
+        errors.forEach((e) => {
+          if (e.constraints) {
+            const constraintKeys = Object.keys(e.constraints);
+
+            constraintKeys.forEach((cKey) => {
+              const msg = e.constraints ? e.constraints[cKey] : '';
+
+              customErrors.push({ key: e.property, message: msg });
+            });
+          }
+        });
+
+        // Error 400
+        throw new BadRequestException(customErrors);
+      },
+    }
+    ),
   );
 };
 
