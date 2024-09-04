@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     Body,
     Controller,
     Delete,
@@ -7,12 +8,15 @@ import {
     NotFoundException,
     Param,
     Post,
-    Query,
+    Query, UseGuards, ValidationPipe,
 } from '@nestjs/common';
 import {UsersService} from '../application/users.service';
 import {UserCreateModel} from "./models/input/create-user.input.model";
 import {UserOutputModel} from "./models/output/user.output.model";
 import {UsersQueryRepository} from "../infrastructure/users.query-repository";
+import {LocalAuthGuard} from "../../auth/local-auth.guard";
+import {BasicAuthGuard} from "../../auth/basic-auth.guard";
+import {GetAllUsersQueryDto} from "./models/output/users.output.model";
 
 @Controller('users')
 export class UsersController {
@@ -48,19 +52,13 @@ export class UsersController {
 
     @Get()
     async getAllUsers(
-        @Query('sortBy') sortBy?: string,
-        @Query('sortDirection') sortDirection?: string,
-        @Query('pageNumber') pageNumber?: number,
-        @Query('pageSize') pageSize?: number,
-        @Query('searchLoginTerm') searchLoginTerm?: string,
-        @Query('searchEmailTerm') searchEmailTerm?: string,
-    ) {
-        const sort = sortBy ?? 'createdAt';
-        const direction = sortDirection?.toLowerCase() === 'asc' ? 'asc' : 'desc';
-        const page = pageNumber ?? 1;
-        const size = pageSize ?? 10;
-        const searchLogin = searchLoginTerm ?? '';
-        const searchEmail = searchEmailTerm ?? '';
+        @Query() query: GetAllUsersQueryDto) {
+        const sort = query.sortBy ?? 'createdAt';
+        const direction = query.sortDirection?.toLowerCase() === 'asc' ? 'asc' : 'desc';
+        const page = query.pageNumber ?? 1;
+        const size = query.pageSize ?? 10;
+        const searchLogin = query.searchLoginTerm ?? '';
+        const searchEmail = query.searchEmailTerm ?? '';
 
         //return this.userService.findAll();
         const {users, totalCount} = await this.userService.findAllPaginated(
@@ -82,6 +80,7 @@ export class UsersController {
         };
     }
 
+    @UseGuards(LocalAuthGuard)
     @Delete(':id')
     @HttpCode(204)
     async deleteUser(@Param('id') id: string): Promise<void> {
