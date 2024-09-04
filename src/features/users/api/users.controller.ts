@@ -29,6 +29,7 @@ export class UsersController {
         this.userService = userService;
     }
 
+    @UseGuards(BasicAuthGuard)
     @Post()
     @HttpCode(201)
     async create(
@@ -80,7 +81,7 @@ export class UsersController {
         };
     }
 
-    @UseGuards(LocalAuthGuard)
+    @UseGuards(BasicAuthGuard)
     @Delete(':id')
     @HttpCode(204)
     async deleteUser(@Param('id') id: string): Promise<void> {
