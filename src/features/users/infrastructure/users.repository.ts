@@ -24,7 +24,6 @@ export class UsersRepository {
         return createdUser.save();
     }
 
-
     async findOneByLogin(login: string): Promise<User | null> {
         return this.userModel.findOne({login}).exec();
     }
