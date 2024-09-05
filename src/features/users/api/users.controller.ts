@@ -1,5 +1,4 @@
 import {
-    BadRequestException,
     Body,
     Controller,
     Delete,
@@ -8,13 +7,12 @@ import {
     NotFoundException,
     Param,
     Post,
-    Query, UseGuards, ValidationPipe,
+    Query, UseGuards,
 } from '@nestjs/common';
 import {UsersService} from '../application/users.service';
-import {UserCreateDto} from "./models/input/create-user.input.model";
+import {UserCreateDto} from "./models/input/create-user.input.dto";
 import {UserOutputModel} from "./models/output/user.output.model";
 import {UsersQueryRepository} from "../infrastructure/users.query-repository";
-import {LocalAuthGuard} from "../../auth/local-auth.guard";
 import {BasicAuthGuard} from "../../auth/basic-auth.guard";
 import {GetAllUsersQueryDto} from "./models/output/users.output.model";
 
