@@ -55,4 +55,51 @@ export class UsersQueryRepository {
     //     return userMapper(user)
     // }
 
+    async findAllPaginated(
+        sort: string,
+        direction: 'asc' | 'desc',
+        page: number,
+        pageSize: number,
+        searchLoginTerm?: string,
+        searchEmailTerm?: string,
+    ): Promise<{ users: User[]; totalCount: number }> {
+        const skip = (page - 1) * pageSize;
+        const sortOption: { [key: string]: SortOrder } = {
+            [sort]: direction === 'asc' ? 1 : -1,
+        };
+
+        const filter: any = {
+            $or: [],
+        };
+        if (searchLoginTerm) {
+            const loginPattern = searchLoginTerm.replace(/%/g, '.*');
+            filter.$or.push({
+                login: {$regex: loginPattern, $options: 'i'},
+            });
+        }
+        if (searchEmailTerm) {
+            const emailPattern = searchEmailTerm.replace(/%/g, '.*');
+            filter.$or.push({
+                email: {$regex: emailPattern, $options: 'i'},
+            });
+        }
+
+        // If no search terms are provided, match all documents
+        if (filter.$or.length === 0) {
+            delete filter.$or;
+        }
+
+        const [users, totalCount] = await Promise.all([
+            this.userModel
+                .find(filter)
+                .sort(sortOption)
+                .skip(skip)
+                .limit(pageSize)
+                .exec(),
+            this.userModel.countDocuments(filter),
+        ]);
+
+        return {users, totalCount};
+    }
+
 }

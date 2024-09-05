@@ -5,7 +5,8 @@ import {Model, SortOrder} from 'mongoose';
 
 @Injectable()
 export class UsersRepository {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+    constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
+    }
 
     async onModuleInit() {
         try {
@@ -24,7 +25,6 @@ export class UsersRepository {
     }
 
 
-
     async findOneByLogin(login: string): Promise<User | null> {
         return this.userModel.findOne({login}).exec();
     }
@@ -38,60 +38,4 @@ export class UsersRepository {
         return result !== null;
     }
 
-    // async updateConfirmation(id: string) {
-    //     let result = await this.userModel
-    //         .updateOne({_id: new ObjectId(id)}, {$set: {'emailConfirmation.isConfirmed': true}})
-    //
-    //
-    //     return !!result.modifiedCount;
-    //
-    // }
-
-
-    async findAllPaginated(
-        sort: string,
-        direction: 'asc' | 'desc',
-        page: number,
-        pageSize: number,
-        searchLoginTerm?: string,
-        searchEmailTerm?: string,
-    ): Promise<{ users: User[]; totalCount: number }> {
-        const skip = (page - 1) * pageSize;
-        const sortOption: { [key: string]: SortOrder } = {
-            [sort]: direction === 'asc' ? 1 : -1,
-        };
-
-        const filter: any = {
-            $or: [],
-        };
-        if (searchLoginTerm) {
-            const loginPattern = searchLoginTerm.replace(/%/g, '.*');
-            filter.$or.push({
-                login: {$regex: loginPattern, $options: 'i'},
-            });
-        }
-        if (searchEmailTerm) {
-            const emailPattern = searchEmailTerm.replace(/%/g, '.*');
-            filter.$or.push({
-                email: {$regex: emailPattern, $options: 'i'},
-            });
-        }
-
-        // If no search terms are provided, match all documents
-        if (filter.$or.length === 0) {
-            delete filter.$or;
-        }
-
-        const [users, totalCount] = await Promise.all([
-            this.userModel
-                .find(filter)
-                .sort(sortOption)
-                .skip(skip)
-                .limit(pageSize)
-                .exec(),
-            this.userModel.countDocuments(filter),
-        ]);
-
-        return {users, totalCount};
-    }
 }
