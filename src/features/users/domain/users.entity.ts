@@ -20,7 +20,7 @@ export class AccountData {
     @Prop({ default: "" })
     passwordRecoveryCode: string;
 
-    @Prop({ default: null })
+    @Prop({ type: Date, default: null })
     recoveryCodeExpirationDate: Date | null;
 
     @Prop()
@@ -53,10 +53,29 @@ export class User {
     @Prop({ type: EmailConfirmation, required: true })
     emailConfirmation: EmailConfirmation;
 
-    static async create(login: string, email: string, password: string): Promise<User> {
+    static async create(
+        login: string,
+        email: string,
+        password: string
+    ): Promise<{
+        emailConfirmation: {
+            confirmationCode: string;
+            isConfirmed: boolean;
+            expirationDate: Date;
+        };
+        accountData: {
+            passwordRecoveryCode: string;
+            createdAt: string;
+            login: string;
+            recoveryCodeExpirationDate: null;
+            email: string;
+            passwordHash: string;
+        };
+    }> {
         const passwordHash = await User.hashPassword(password);
 
-        return {
+        // Correctly assigning an object to 'user'
+        const user = {
             accountData: {
                 login,
                 email,
@@ -74,6 +93,8 @@ export class User {
                 isConfirmed: false,
             },
         };
+
+        return user;
     }
 
     static async hashPassword(password: string): Promise<string> {
@@ -81,8 +102,6 @@ export class User {
         return await bcrypt.hash(password, salt);
     }
 }
-
-
 
 export const UsersEntity = SchemaFactory.createForClass(User);
 
