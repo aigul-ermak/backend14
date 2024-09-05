@@ -3,7 +3,7 @@ import {IsString, Length, Matches} from "class-validator";
 import {IsOptionalEmail} from "../../../../../infrastructure/decorators/validate/is-optional-email";
 
 
-export class UserCreateModel {
+export class UserCreateDto {
     @IsString()
     @Trim()
     @Length(3, 10, {message: "Length not correct"})
