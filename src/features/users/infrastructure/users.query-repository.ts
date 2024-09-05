@@ -5,9 +5,9 @@ import {Model, SortOrder} from 'mongoose';
 import {UserOutputModel, UserOutputModelMapper} from "../api/models/output/user.output.model";
 
 @Injectable()
-export class UsersQueryRepository
-{
-    constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+export class UsersQueryRepository {
+    constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
+    }
 
     async onModuleInit() {
         try {
@@ -20,6 +20,10 @@ export class UsersQueryRepository
         }
     }
 
+    async findOneByEmail(email: string): Promise<User | null> {
+        return this.userModel.findOne({email}).exec();
+    }
+
     async getById(userId: string): Promise<UserOutputModel | null> {
         const user = await this.userModel.findById(userId).exec();
 
@@ -29,5 +33,26 @@ export class UsersQueryRepository
 
         return UserOutputModelMapper(user);
     }
+
+    async findOneByLoginOrEmail(loginOrEmail: string) {
+        const user = await this.userModel.findOne({
+            $or:
+                [{'login': loginOrEmail}, {'email': loginOrEmail}]
+        })
+
+        if (!user) {
+            return null;
+        }
+
+        return user;
+    }
+
+    // static async findUserByConfirmationCode(code: string) {
+    //     const user= await this.userModel.findOne({"emailConfirmation.confirmationCode": code})
+    //     if (!user) {
+    //         return null
+    //     }
+    //     return userMapper(user)
+    // }
 
 }

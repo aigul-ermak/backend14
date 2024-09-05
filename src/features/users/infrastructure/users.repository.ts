@@ -18,14 +18,12 @@ export class UsersRepository {
         }
     }
 
-    async create(user: User): Promise<UserDocument> {
+    async create(user: any): Promise<UserDocument> {
         const createdUser = new this.userModel(user);
         return createdUser.save();
     }
 
-    async findOneByEmail(email: string): Promise<User | null> {
-        return this.userModel.findOne({email}).exec();
-    }
+
 
     async findOneByLogin(login: string): Promise<User | null> {
         return this.userModel.findOne({login}).exec();
@@ -39,6 +37,15 @@ export class UsersRepository {
         const result = await this.userModel.findByIdAndDelete(id).exec();
         return result !== null;
     }
+
+    // async updateConfirmation(id: string) {
+    //     let result = await this.userModel
+    //         .updateOne({_id: new ObjectId(id)}, {$set: {'emailConfirmation.isConfirmed': true}})
+    //
+    //
+    //     return !!result.modifiedCount;
+    //
+    // }
 
 
     async findAllPaginated(
