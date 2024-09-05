@@ -17,10 +17,10 @@ export class AccountData {
     @Prop({required: true})
     passwordHash: string;
 
-    @Prop({ default: "" })
+    @Prop({default: ""})
     passwordRecoveryCode: string;
 
-    @Prop({ type: Date, default: null })
+    @Prop({type: Date, default: null})
     recoveryCodeExpirationDate: Date | null;
 
     @Prop()
@@ -30,7 +30,7 @@ export class AccountData {
 
 @Schema()
 export class EmailConfirmation {
-    @Prop({ default: randomUUID() })
+    @Prop({default: randomUUID()})
     confirmationCode: string;
 
     @Prop({
@@ -41,16 +41,16 @@ export class EmailConfirmation {
     })
     expirationDate: Date;
 
-    @Prop({ default: false })
+    @Prop({default: false})
     isConfirmed: boolean;
 }
 
 @Schema()
 export class User {
-    @Prop({ type: AccountData, required: true })
+    @Prop({type: AccountData, required: true})
     accountData: AccountData;
 
-    @Prop({ type: EmailConfirmation, required: true })
+    @Prop({type: EmailConfirmation, required: true})
     emailConfirmation: EmailConfirmation;
 
     static async create(
