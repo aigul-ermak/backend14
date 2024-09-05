@@ -7,11 +7,13 @@ import {APP_GUARD} from "@nestjs/core";
 import {JwtModule, JwtService} from "@nestjs/jwt";
 import {LocalStrategy} from "./local.strategy";
 import {BasicStrategy} from "./basic.strategy";
+import {EmailModule} from "../email/email.module";
 
 @Module
 ({
     imports: [
         UsersModule,
+        EmailModule,
         JwtModule.register({
             global: true,
             secret: jwtConstants.JWT_SECRET,

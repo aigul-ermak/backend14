@@ -20,14 +20,14 @@ import {UsersModule} from "./features/users/users.module";
 import {TestingModule} from "./features/testing/testing-module";
 import {PostsModule} from "./features/posts/posts.module";
 import {BlogsModule} from "./features/blogs/blogs.module";
-import { AuthModule } from './features/auth/auth.module';
-import { AuthController } from './features/auth/api/auth.controller';
-import { AuthService } from './features/auth/application/auth.service';
+import {AuthModule} from './features/auth/auth.module';
+import {AuthController} from './features/auth/api/auth.controller';
+import {AuthService} from './features/auth/application/auth.service';
 import {UsersQueryRepository} from "./features/users/infrastructure/users.query-repository";
+import {EmailModule} from "./features/email/email.module";
 
 
-
-const usersProviders: Provider[] = [UsersRepository,UsersQueryRepository, UsersService];
+const usersProviders: Provider[] = [UsersRepository, UsersQueryRepository, UsersService];
 
 @Module({
     imports: [
@@ -38,6 +38,7 @@ const usersProviders: Provider[] = [UsersRepository,UsersQueryRepository, UsersS
         PostsModule,
         BlogsModule,
         AuthModule,
+        EmailModule,
     ],
     providers: [...usersProviders, AuthService],
     controllers: [UsersController, AuthController],
