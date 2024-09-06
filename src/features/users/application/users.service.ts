@@ -4,6 +4,9 @@ import {User} from '../domain/users.entity';
 import {UsersRepository} from '../infrastructure/users.repository';
 import {UserOutputModelMapper} from "../api/models/output/user.output.model";
 import {UsersQueryRepository} from "../infrastructure/users.query-repository";
+import {UserDBType} from "../types/user.types";
+import {add} from "date-fns";
+import bcrypt from "bcrypt";
 
 
 @Injectable()
@@ -18,7 +21,7 @@ export class UsersService {
         email: string,
         login: string,
         password: string,
-    ): Promise<{ id: string; login: string; email: string; createdAt: Date }> {
+    ) {
 
         const existingUser = await this.usersQueryRepository.findOneByEmail(email);
 
@@ -26,15 +29,37 @@ export class UsersService {
             throw new ConflictException(`User with this email already exists`);
         }
 
-        const user = await User.create(login, email, password);
-        const createdUser = await this.usersRepository.create(user);
+        const saltRounds = 10;
+        const passwordHashed = await bcrypt.hash(password, saltRounds);
 
-        return {
-            id: createdUser.id.toString(),
-            login: createdUser.accountData.login,
-            email: createdUser.accountData.email,
-            createdAt: createdUser.accountData.createdAt,
-        };
+
+        const newUser: UserDBType = {
+            accountData: {
+                login: login,
+                email: email,
+                passwordHash: passwordHashed,
+                passwordRecoveryCode: "",
+                recoveryCodeExpirationDate: null,
+                createdAt: new Date().toISOString()
+            },
+            emailConfirmation: {
+                confirmationCode: "",
+                expirationDate: add(new Date(), {
+                    hours: 1,
+                    minutes: 3
+                }),
+                isConfirmed: false
+            }
+        }
+
+        const createdUser = await this.usersRepository.createUser(newUser);
+
+        // return {
+        //     id: createdUser.id.toString(),
+        //     login: createdUser.accountData.login,
+        //     email: createdUser.accountData.email,
+        //     createdAt: createdUser.accountData.createdAt,
+        // };
     }
 
     // async getById(userId: string): Promise<UserOutputModel | null> {
