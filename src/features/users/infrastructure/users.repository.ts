@@ -2,6 +2,8 @@ import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {User, UserDocument} from '../domain/users.entity';
 import {Model, SortOrder} from 'mongoose';
+import {CreateUserDto} from "../api/models/input/create-user.input.dto";
+import {UserDBType} from "../types/user.types";
 
 @Injectable()
 export class UsersRepository {
@@ -19,13 +21,13 @@ export class UsersRepository {
         }
     }
 
-    async create(user: any): Promise<UserDocument> {
-        const createdUser = new this.userModel(user);
-        return createdUser.save();
+    async createUser(user: UserDBType) {
+        const result = await this.userModel.create(user);
+        return result._id.toString();
     }
 
     async findOneByLogin(login: string): Promise<User | null> {
-        return this.userModel.findOne({login}).exec();
+        return this.userModel.findOne({"accountData.login": login}).exec();
     }
 
     async findAll(): Promise<User[]> {
