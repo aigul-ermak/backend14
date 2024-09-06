@@ -1,7 +1,6 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {HydratedDocument} from 'mongoose';
 import * as bcrypt from 'bcrypt';
-import {randomUUID} from 'crypto';
 import {add} from "date-fns";
 
 export type UserDocument = HydratedDocument<User>;
@@ -30,7 +29,7 @@ export class AccountData {
 
 @Schema()
 export class EmailConfirmation {
-    @Prop({default: randomUUID()})
+    @Prop({default: ""})
     confirmationCode: string;
 
     @Prop({
@@ -53,54 +52,54 @@ export class User {
     @Prop({type: EmailConfirmation, required: true})
     emailConfirmation: EmailConfirmation;
 
-    static async create(
-        login: string,
-        email: string,
-        password: string
-    ): Promise<{
-        emailConfirmation: {
-            confirmationCode: string;
-            isConfirmed: boolean;
-            expirationDate: Date;
-        };
-        accountData: {
-            passwordRecoveryCode: string;
-            createdAt: string;
-            login: string;
-            recoveryCodeExpirationDate: null;
-            email: string;
-            passwordHash: string;
-        };
-    }> {
-        const passwordHash = await User.hashPassword(password);
+    // static async createUser(
+    //     login: string,
+    //     email: string,
+    //     password: string
+    // ): Promise<{
+    //     emailConfirmation: {
+    //         confirmationCode: string;
+    //         isConfirmed: boolean;
+    //         expirationDate: Date;
+    //     };
+    //     accountData: {
+    //         passwordRecoveryCode: string;
+    //         createdAt: string;
+    //         login: string;
+    //         recoveryCodeExpirationDate: null;
+    //         email: string;
+    //         passwordHash: string;
+    //     };
+    // }> {
+    //     const passwordHash = await User.hashPassword(password);
 
         // Correctly assigning an object to 'user'
-        const user = {
-            accountData: {
-                login,
-                email,
-                passwordHash,
-                passwordRecoveryCode: "",
-                recoveryCodeExpirationDate: null,
-                createdAt: new Date().toISOString(),
-            },
-            emailConfirmation: {
-                confirmationCode: randomUUID(),
-                expirationDate: add(new Date(), {
-                    hours: 1,
-                    minutes: 3,
-                }),
-                isConfirmed: false,
-            },
-        };
+        // const user = {
+        //     accountData: {
+        //         login,
+        //         email,
+        //         passwordHash,
+        //         passwordRecoveryCode: "",
+        //         recoveryCodeExpirationDate: null,
+        //         createdAt: new Date().toISOString(),
+        //     },
+        //     emailConfirmation: {
+        //         confirmationCode: "",
+        //         expirationDate: add(new Date(), {
+        //             hours: 1,
+        //             minutes: 3,
+        //         }),
+        //         isConfirmed: false,
+        //     },
+        // };
+        //
+        // return user;
+    // }
 
-        return user;
-    }
-
-    static async hashPassword(password: string): Promise<string> {
-        const salt = await bcrypt.genSalt(10);
-        return await bcrypt.hash(password, salt);
-    }
+    // static async hashPassword(password: string): Promise<string> {
+    //     const salt = await bcrypt.genSalt(10);
+    //     return await bcrypt.hash(password, salt);
+    // }
 }
 
 export const UsersEntity = SchemaFactory.createForClass(User);
