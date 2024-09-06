@@ -34,13 +34,13 @@ export class UsersController {
         @Body() createUserDto: CreateUserDto,
     ): Promise<UserOutputModel> {
 
-        const result = await this.userService.create(
+        const userId = await this.userService.createUser(
             createUserDto.email,
             createUserDto.login,
             createUserDto.password,
         );
 
-        const user = await this.usersQueryRepository.getById("1");
+        const user = await this.usersQueryRepository.getById(userId);
 
         if (!user) {
             throw new NotFoundException('User not found');

@@ -17,7 +17,7 @@ export class UsersService {
     ) {
     }
 
-    async create(
+    async createUser(
         email: string,
         login: string,
         password: string,
@@ -52,14 +52,7 @@ export class UsersService {
             }
         }
 
-        const createdUser = await this.usersRepository.createUser(newUser);
-
-        // return {
-        //     id: createdUser.id.toString(),
-        //     login: createdUser.accountData.login,
-        //     email: createdUser.accountData.email,
-        //     createdAt: createdUser.accountData.createdAt,
-        // };
+        return await this.usersRepository.createUser(newUser);
     }
 
     // async getById(userId: string): Promise<UserOutputModel | null> {
