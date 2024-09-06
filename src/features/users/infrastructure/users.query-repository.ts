@@ -21,7 +21,7 @@ export class UsersQueryRepository {
     }
 
     async findOneByEmail(email: string): Promise<User | null> {
-        return this.userModel.findOne({email}).exec();
+        return this.userModel.findOne({"accountData.email": email}).exec();
     }
 
     async getById(userId: string): Promise<UserOutputModel | null> {
@@ -37,7 +37,7 @@ export class UsersQueryRepository {
     async findOneByLoginOrEmail(loginOrEmail: string) {
         const user = await this.userModel.findOne({
             $or:
-                [{'login': loginOrEmail}, {'email': loginOrEmail}]
+                [{'accountData.login': loginOrEmail}, {'accountData.email': loginOrEmail}]
         })
 
         if (!user) {
