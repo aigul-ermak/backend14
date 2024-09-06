@@ -52,7 +52,7 @@ export class UsersController {
     @Get()
     async getAllUsers(
         @Query() query: GetAllUsersQueryDto) {
-        const sort = query.sortBy ?? 'createdAt';
+        const sort = query.sortBy ?? 'accountData.createdAt';
         const direction = query.sortDirection?.toLowerCase() === 'asc' ? 'asc' : 'desc';
         const page = query.pageNumber ?? 1;
         const size = query.pageSize ?? 10;
