@@ -65,7 +65,7 @@ export class UsersQueryRepository {
     ): Promise<{ users: User[]; totalCount: number }> {
         const skip = (page - 1) * pageSize;
         const sortOption: { [key: string]: SortOrder } = {
-            [sort]: direction === 'asc' ? 1 : -1,
+            [`accountData.${sort}`]: direction === 'asc' ? 1 : -1,
         };
 
         const filter: any = {
@@ -74,13 +74,13 @@ export class UsersQueryRepository {
         if (searchLoginTerm) {
             const loginPattern = searchLoginTerm.replace(/%/g, '.*');
             filter.$or.push({
-                login: {$regex: loginPattern, $options: 'i'},
+                'accountData.login': {$regex: loginPattern, $options: 'i'},
             });
         }
         if (searchEmailTerm) {
             const emailPattern = searchEmailTerm.replace(/%/g, '.*');
             filter.$or.push({
-                email: {$regex: emailPattern, $options: 'i'},
+                'accountData.email': {$regex: emailPattern, $options: 'i'},
             });
         }
 
