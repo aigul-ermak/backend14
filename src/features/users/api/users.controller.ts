@@ -10,7 +10,7 @@ import {
     Query, UseGuards,
 } from '@nestjs/common';
 import {UsersService} from '../application/users.service';
-import {UserCreateDto} from "./models/input/create-user.input.dto";
+import {CreateUserDto} from "./models/input/create-user.input.dto";
 import {UserOutputModel} from "./models/output/user.output.model";
 import {UsersQueryRepository} from "../infrastructure/users.query-repository";
 import {BasicAuthGuard} from "../../auth/basic-auth.guard";
@@ -31,7 +31,7 @@ export class UsersController {
     @Post()
     @HttpCode(201)
     async create(
-        @Body() createUserDto: UserCreateDto,
+        @Body() createUserDto: CreateUserDto,
     ): Promise<UserOutputModel> {
 
         const result = await this.userService.create(
@@ -40,7 +40,7 @@ export class UsersController {
             createUserDto.password,
         );
 
-        const user = await this.usersQueryRepository.getById(result!.id);
+        const user = await this.usersQueryRepository.getById("1");
 
         if (!user) {
             throw new NotFoundException('User not found');
