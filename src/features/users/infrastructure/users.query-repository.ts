@@ -34,7 +34,7 @@ export class UsersQueryRepository {
         return UserOutputModelMapper(user);
     }
 
-    async findOneByLoginOrEmail(loginOrEmail: string) {
+    async findOneByLoginOrEmail(loginOrEmail: string): Promise<User | null> {
         const user = await this.userModel.findOne({
             $or:
                 [{'accountData.login': loginOrEmail}, {'accountData.email': loginOrEmail}]
