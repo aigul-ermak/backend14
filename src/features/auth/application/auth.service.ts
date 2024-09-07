@@ -5,13 +5,11 @@ import {User} from "../../users/domain/users.entity";
 import {UsersQueryRepository} from "../../users/infrastructure/users.query-repository";
 import {UsersRepository} from "../../users/infrastructure/users.repository";
 import {EmailService} from "../../email/email.service";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import {CreateUserDto} from "../../users/api/models/input/create-user.input.dto";
 import {UserDBType} from "../../users/types/user.types";
 import bcrypt from "bcrypt";
 import * as dateFns from "date-fns";
-
-
 
 
 export type AccessToken = string;
@@ -39,6 +37,13 @@ export class AuthService {
             throw new UnauthorizedException('Invalid credentials');
         }
 
+        const isPasswordValid = await bcrypt.compare(password, user.accountData.passwordHash);
+
+
+        if (!isPasswordValid) {
+            throw new UnauthorizedException('Invalid credentials');
+        }
+
         return user;
     }
 
@@ -57,9 +62,9 @@ export class AuthService {
 
         const confirmationCode = uuidv4();
         const saltRounds = 10;
-        const passwordHashed = await  bcrypt.hash(createUserDto.password, saltRounds);
+        const passwordHashed = await bcrypt.hash(createUserDto.password, saltRounds);
 
-        const newUser: UserDBType ={
+        const newUser: UserDBType = {
             accountData: {
                 login: createUserDto.login,
                 email: createUserDto.email,
