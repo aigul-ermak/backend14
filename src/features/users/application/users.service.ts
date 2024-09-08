@@ -2,11 +2,13 @@ import {ConflictException, Injectable} from '@nestjs/common';
 import {User} from '../domain/users.entity';
 
 import {UsersRepository} from '../infrastructure/users.repository';
-import {UserOutputModelMapper} from "../api/models/output/user.output.model";
+import {UserOutputModel, UserOutputModelMapper, UsersOutputModelMapper} from "../api/models/output/user.output.model";
 import {UsersQueryRepository} from "../infrastructure/users.query-repository";
 import {UserDBType} from "../types/user.types";
 import {add} from "date-fns";
 import bcrypt from "bcrypt";
+import {SortUserDto} from "../api/models/output/sort.user.dto";
+import {PaginatedDto} from "../api/models/output/paginated.users.dto";
 
 
 @Injectable()
@@ -44,10 +46,8 @@ export class UsersService {
             },
             emailConfirmation: {
                 confirmationCode: "",
-                expirationDate: add(new Date(), {
-                    hours: 1,
-                    minutes: 3
-                }),
+                expirationDate: null,
+
                 isConfirmed: false
             }
         }
@@ -84,29 +84,45 @@ export class UsersService {
         return await this.usersRepository.deleteById(id);
     }
 
-    async findAllPaginated(
-        sort: string,
-        direction: 'asc' | 'desc',
-        page: number,
-        pageSize: number,
-        searchLogin: string,
-        searchEmail: string,
-    ) {
-        const {users, totalCount} = await this.usersQueryRepository.findAllPaginated(
-            sort,
-            direction,
-            page,
-            pageSize,
-            searchLogin,
-            searchEmail,
-        );
+    async getAllUsers(
+        sortData: SortUserDto
+    ): Promise<PaginatedDto<User>> {
+        const sortBy = sortData.sortBy ?? 'createdAt';
+        const sortDirection = sortData.sortDirection ?? 'desc';
+        const pageNumber = sortData.pageNumber ?? 1;
+        const pageSize = sortData.pageSize ?? 10;
+        const searchLoginTerm = sortData.searchLoginTerm ?? null;
+        const searchEmailTerm = sortData.searchEmailTerm ?? null;
 
-        const mappedUsers = users.map(UserOutputModelMapper);
-
-        return {
-            users: mappedUsers,
-            totalCount,
+        type FilterType = {
+            $or?: ({
+                $regex: string;
+                $options: string;
+            } | {})[];
         };
+        let filter: FilterType = {$or: []};
+        if (searchEmailTerm) {
+            filter['$or']?.push({email: {$regex: searchEmailTerm, $options: 'i'}});
+        }
+        if (searchLoginTerm) {
+            filter['$or']?.push({login: {$regex: searchLoginTerm, $options: 'i'}});
+        }
+        if (filter['$or']?.length === 0) {
+            filter['$or']?.push({});
+        }
+
+        //const users: WithId<UserType>[] = await UserModel
+        //TODO any here
+        const {users, totalCount}: any = await this.usersQueryRepository.findAllPaginated(filter, sortData)
+        const pageCount: number = Math.ceil(totalCount / +pageSize);
+
+       return {
+            pagesCount: pageCount,
+            page: +pageNumber,
+            pageSize: +pageSize,
+            totalCount: totalCount,
+            items: users.map(UserOutputModelMapper)
+        }
     }
 
     async checkCredentials(loginOrEmail: string, password: string) {
