@@ -7,9 +7,10 @@ import {UsersRepository} from "../../users/infrastructure/users.repository";
 import {EmailService} from "../../email/email.service";
 import {v4 as uuidv4} from 'uuid';
 import {CreateUserDto} from "../../users/api/models/input/create-user.input.dto";
-import {UserDBType} from "../../users/types/user.types";
+import {OutputUserItemType, UserDBType} from "../../users/types/user.types";
 import bcrypt from "bcrypt";
 import * as dateFns from "date-fns";
+import {jwtConstants} from "../constants";
 
 
 export type AccessToken = string;
@@ -26,6 +27,12 @@ export class AuthService {
     ) {
     }
 
+    // validateToken(token: string) {
+    //     return this.jwtService.verify(token, {
+    //         secret : process.env.JWT_SECRET_KEY
+    //     });
+    // }
+
     async validateUser(loginOrEmail: string, password: string) {
         //let user: User | null = null;
 
@@ -34,22 +41,24 @@ export class AuthService {
         const user = await this.usersQueryRepository.findOneByLoginOrEmail(loginOrEmail);
 
         if (!user) {
-            throw new UnauthorizedException('Invalid credentials');
+            //throw new UnauthorizedException('Invalid credentials');
+            return null;
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.accountData.passwordHash);
 
 
         if (!isPasswordValid) {
-            throw new UnauthorizedException('Invalid credentials');
+            //throw new UnauthorizedException('Invalid credentials');
+            return null;
         }
 
         return user;
     }
 
-    async login(user: any) {
+    async loginUser(user: any) {
         const payload = {loginOrEmail: user.email, id: user.id};
-        return {accessToken: this.jwtService.sign(payload)};
+        return {accessToken: this.jwtService.sign(payload, {secret: jwtConstants.JWT_SECRET})};
     }
 
     async createUser(createUserDto: CreateUserDto) {
@@ -57,7 +66,11 @@ export class AuthService {
         const existsUser = await this.usersQueryRepository.findOneByLoginOrEmail(createUserDto.email);
 
         if (existsUser !== null) {
-            throw new BadRequestException('User with this email or login already exists');
+            throw new BadRequestException({
+                errorsMessages: [
+                    {message: 'User with this email or login already exists', field: 'email'}
+                ]
+            });
         }
 
         const confirmationCode = uuidv4();
@@ -95,16 +108,21 @@ export class AuthService {
 
     }
 
-    // async confirmEmail(code: string) {
-    //     const user = await this.usersQueryRepository.findUserByConfirmationCode(code);
-    //
-    //     if (!user) return false
-    //
-    //     if (user.emailConfirmation.confirmationCode === code) {
-    //         let result: boolean = await this.usersRepository.updateConfirmation(user.id)
-    //         return result
-    //     }
-    //     return false
-    // }
+    async confirmEmail(code: string): Promise<boolean> {
+
+        const user = await this.usersQueryRepository.findUserByConfirmationCode(code);
+
+        if (!user) return false;
+
+        if (user.emailConfirmation.confirmationCode === code) {
+            let result: boolean = await this.usersRepository.updateConfirmation(user.id)
+            return result
+        }
+        return false;
+    }
+
+    async findUserById(id: string) {
+        return await this.usersQueryRepository.getUserById(id);
+    }
 
 }
