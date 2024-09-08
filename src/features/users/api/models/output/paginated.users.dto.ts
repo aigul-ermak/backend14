@@ -1,9 +1,9 @@
 import {User} from "../../../domain/users.entity";
 
-export class PaginatedUsersDto {
+export type PaginatedDto<T> = {
     pagesCount: number;
     page: number;
     pageSize: number;
     totalCount: number;
-    items: User[];
+    items: T[];
 }
