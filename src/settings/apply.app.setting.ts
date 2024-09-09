@@ -1,11 +1,11 @@
 import {
-  BadRequestException,
-  INestApplication,
-  ValidationPipe,
+    BadRequestException,
+    INestApplication,
+    ValidationPipe,
 } from '@nestjs/common';
-import { appSettings } from './app.setting';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { HttpExceptionFilter } from '../infrastructure/exception-filters/http.exception.filters';
+import {appSettings} from './app.setting';
+import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
+import {HttpExceptionFilter} from '../infrastructure/exception-filters/http.exception.filters';
 import {AppModule} from "../app.module";
 import {useContainer} from "class-validator";
 
@@ -13,25 +13,24 @@ import {useContainer} from "class-validator";
 const APP_PREFIX = '/api';
 
 
-
 // Используем данную функцию в main.ts и в e2e тестах
 export const applyAppSettings = (app: INestApplication) => {
-  // Применение глобальных Interceptors
-  // app.useGlobalInterceptors()
-  // Применение глобальных Guards
-  //  app.useGlobalGuards(new AuthGuard());
-  // Применить middleware глобально
-  //app.use(LoggerMiddlewareFunc);
-  // Установка префикса
-  //setAppPrefix(app);
-  // Конфигурация swagger документации
-  //setSwagger(app);
-  // Применение глобальных pipes
-  setAppPipes(app);
-  //Применение глобальных exceptions filters
-  //setAppExceptionsFilters(app);
+    // Применение глобальных Interceptors
+    // app.useGlobalInterceptors()
+    // Применение глобальных Guards
+    //  app.useGlobalGuards(new AuthGuard());
+    // Применить middleware глобально
+    //app.use(LoggerMiddlewareFunc);
+    // Установка префикса
+    // setAppPrefix(app);
+    // Конфигурация swagger документации
+    //setSwagger(app);
+    // Применение глобальных pipes
+    setAppPipes(app);
+    //Применение глобальных exceptions filters
+    //setAppExceptionsFilters(app);
 
-  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+    useContainer(app.select(AppModule), {fallbackOnErrors: true});
 };
 
 // const setAppPrefix = (app: INestApplication) => {
@@ -56,32 +55,26 @@ export const applyAppSettings = (app: INestApplication) => {
 // };
 
 const setAppPipes = (app: INestApplication) => {
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      stopAtFirstError: true,
+    app.useGlobalPipes(
+        new ValidationPipe({
+            transform: true,
+            stopAtFirstError: true,
+            exceptionFactory: (errors) => {
+                const customErrors = errors.map((e) => {
+                    if (e.constraints) {
+                        return Object.keys(e.constraints).map((cKey) => ({
+                            message: e.constraints ? e.constraints[cKey] : '',
+                            field: e.property,
+                        }));
+                    }
+                }).flat();
 
-      exceptionFactory: (errors) => {
-        const customErrors: any = [];
-
-        errors.forEach((e) => {
-          if (e.constraints) {
-            const constraintKeys = Object.keys(e.constraints);
-
-            constraintKeys.forEach((cKey) => {
-              const msg = e.constraints ? e.constraints[cKey] : '';
-
-              customErrors.push({ key: e.property, message: msg });
-            });
-          }
-        });
-
-        // Error 400
-        throw new BadRequestException(customErrors);
-      },
-    }
-    ),
-  );
+                throw new BadRequestException({
+                    errorsMessages: customErrors
+                });
+            },
+        }),
+    );
 };
 
 // const setAppExceptionsFilters = (app: INestApplication) => {
