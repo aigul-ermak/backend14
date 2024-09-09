@@ -51,13 +51,33 @@ class APISettings {
     // Database
     public readonly MONGO_CONNECTION_URI: string;
 
+    public readonly MONGO_CONNECTION_URI_FOR_TESTS: string;
+
+    public readonly MONGO_DBName: string;
+
+    public readonly TEST_DBName: string;
+
     constructor(private readonly envVariables: EnvironmentVariable) {
         // Application
         this.APP_PORT = this.getNumberOrDefault(envVariables.APP_PORT, 7840);
 
+        this.MONGO_DBName =
+            envVariables.MONGO_DBName ?? 'db';
+
         // Database
         this.MONGO_CONNECTION_URI =
             envVariables.MONGO_CONNECTION_URI ?? 'mongodb://localhost/nest';
+
+        this.MONGO_CONNECTION_URI_FOR_TESTS =
+            envVariables.MONGO_CONNECTION_URI_FOR_TESTS ?? 'mongodb://localhost';
+
+        this.MONGO_DBName =
+            envVariables.MONGO_DBName ?? 'home-works-db';
+
+        this.TEST_DBName =
+            envVariables.TEST_DBName ?? 'test-db';
+
+
     }
 
     private getNumberOrDefault(value: any, defaultValue: number): number {
