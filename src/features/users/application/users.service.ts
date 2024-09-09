@@ -116,7 +116,7 @@ export class UsersService {
         const {users, totalCount}: any = await this.usersQueryRepository.findAllPaginated(filter, sortData)
         const pageCount: number = Math.ceil(totalCount / +pageSize);
 
-       return {
+        return {
             pagesCount: pageCount,
             page: +pageNumber,
             pageSize: +pageSize,

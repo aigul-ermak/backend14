@@ -12,16 +12,16 @@ export class UsersQueryRepository {
     constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
     }
 
-    async onModuleInit() {
-        try {
-            await this.userModel.collection.dropIndex('email_1');
-        } catch (err) {
-            if (err.code !== 27) {
-                // 27 = IndexNotFound
-                throw err;
-            }
-        }
-    }
+    // async onModuleInit() {
+    //     try {
+    //         await this.userModel.collection.dropIndex('email_1');
+    //     } catch (err) {
+    //         if (err.code !== 27) {
+    //             // 27 = IndexNotFound
+    //             throw err;
+    //         }
+    //     }
+    // }
 
     async findOneByEmail(email: string): Promise<User | null> {
         return this.userModel.findOne({"accountData.email": email}).exec();
