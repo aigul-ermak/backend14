@@ -14,12 +14,14 @@ import {
 import {UsersService} from "../../users/application/users.service";
 import {UsersQueryRepository} from "../../users/infrastructure/users.query-repository";
 import {AuthService} from "../application/auth.service";
-import {AuthGuard} from "@nestjs/passport";
+// import {AuthGuard} from "@nestjs/passport";
 import {LocalAuthGuard} from "../local-auth.guard";
 import {BasicAuthGuard} from "../basic-auth.guard";
 import {UserLoginDto} from "./models/input/login-user.input.dto";
 import {CreateUserDto} from "../../users/api/models/input/create-user.input.dto";
 import {UserOutputModel} from "../../users/api/models/output/user.output.model";
+import {OutputUserItemType} from "../../users/types/user.types";
+import {AuthGuard} from "../../../infrastructure/guards/auth.guard";
 
 
 @Controller('auth')
@@ -39,13 +41,15 @@ export class AuthController {
     @HttpCode(200)
     async login(@Body() loginDto: UserLoginDto) {
 
+
         const user = await this.authService.validateUser(loginDto.loginOrEmail, loginDto.password);
 
-        if (!user) {
+        if (user !== null) {
+            return await this.authService.loginUser(user);
+        } else {
             throw new UnauthorizedException('Invalid credentials');
         }
 
-        return this.authService.login(user);
     }
 
     //
@@ -65,15 +69,16 @@ export class AuthController {
 // }
 //
 
-    // @Post('/registration-confirmation')
-    // @HttpCode(204)
-    // async confirmRegistration(code: string) {
-    //     const result = await this.authService.confirmEmail(code)
-    //
-    //     if (!result) {
-    //         throw new BadRequestException()
-    //     }
-    // }
+    @Post('/registration-confirmation')
+    @HttpCode(204)
+    async confirmRegistration(@Body('code') code: string) {
+
+        const result: boolean = await this.authService.confirmEmail(code)
+
+        if (!result) {
+            throw new BadRequestException()
+        }
+    }
 
     @Post('/registration')
     @HttpCode(204)
@@ -83,6 +88,11 @@ export class AuthController {
         const result = await this.authService.createUser(
             createUserDto
         );
+
+        if (!result) {
+            throw new BadRequestException();
+        }
+
 
     }
 
@@ -98,9 +108,26 @@ export class AuthController {
     //
     // }
 
-    // @Get('/me')
-    // async getUser(
-    //     @Req() req: Request
-    // ) {
-    // }
+    @UseGuards(AuthGuard)
+    @Get('/me')
+    @HttpCode(200)
+    async getUser(
+        @Req() req: Request
+    ) {
+        const userId = req['user']?.id;
+        const userLogin = req['user'].login;
+
+        const user = await this.authService.findUserById(userId.toString())
+
+        if (!user) {
+            throw new BadRequestException();
+        }
+
+        return ({
+            "email": user.email,
+            "login": user.login,
+            "userId": user.id
+        })
+    }
 }
+
