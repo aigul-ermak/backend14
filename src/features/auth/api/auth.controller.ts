@@ -92,8 +92,6 @@ export class AuthController {
         if (!result) {
             throw new BadRequestException();
         }
-
-
     }
 
     // @Post('/registration-email-sending')
