@@ -1,9 +1,10 @@
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {User, UserDocument} from '../domain/users.entity';
-import {Model, SortOrder} from 'mongoose';
+import {Model, Schema, SortOrder} from 'mongoose';
 import {CreateUserDto} from "../api/models/input/create-user.input.dto";
 import {UserDBType} from "../types/user.types";
+
 
 @Injectable()
 export class UsersRepository {
@@ -37,6 +38,15 @@ export class UsersRepository {
     async deleteById(id: string): Promise<boolean> {
         const result = await this.userModel.findByIdAndDelete(id).exec();
         return result !== null;
+    }
+
+    async updateConfirmation(id: string): Promise<boolean> {
+        let result = await this.userModel
+            .updateOne({_id: id}, {$set: {'emailConfirmation.isConfirmed': true}})
+
+        console.log(result);
+        //return !!result.modifiedCount;
+        return true;
     }
 
 }
