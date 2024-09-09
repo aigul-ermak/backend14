@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {User, UserDocument} from '../domain/users.entity';
-import {Model, SortOrder} from 'mongoose';
+import {FilterQuery, Model, SortOrder} from 'mongoose';
 import {UserOutputModel, UserOutputModelMapper} from "../api/models/output/user.output.model";
 import {UserDBType} from "../types/user.types";
 import {PaginatedDto} from "../api/models/output/paginated.users.dto";
@@ -98,6 +98,9 @@ export class UsersQueryRepository {
         const searchLoginTerm = sortData.searchLoginTerm ?? null;
         const searchEmailTerm = sortData.searchEmailTerm ?? null;
 
+        console.log(`Sorting by: ${sortBy} in ${sortDirection} order`);
+        console.log(`Page number: ${pageNumber}, Page size: ${pageSize}`);
+
         const users = await this.userModel
             .find(filter)
             .sort({[sortBy]: sortDirection === 'desc' ? -1 : 1})
@@ -108,6 +111,19 @@ export class UsersQueryRepository {
         const totalCount = await this.userModel.countDocuments(filter);
 
         return {users, totalCount};
+    }
+
+    async findAll(filter: FilterQuery<User>, sortBy: string, sortDirection: string, skip: number, limit: number) {
+        return this.userModel
+            .find(filter)
+            .sort({[sortBy]: sortDirection === 'desc' ? -1 : 1})
+            .skip(skip)
+            .limit(limit)
+            .exec();
+    }
+
+    async countDocuments(filter: FilterQuery<User>): Promise<number> {
+        return this.userModel.countDocuments(filter).exec();
     }
 }
 

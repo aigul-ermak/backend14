@@ -11,13 +11,13 @@ export class GetAllUsersQueryDto {
     sortDirection?: string;
 
     @IsOptional()
-    @Type(() => Number) // This will transform the string to a number
+    @Type(() => Number)
     @IsInt()
     @Min(1)
     pageNumber?: number;
 
     @IsOptional()
-    @Type(() => Number) // This will transform the string to a number
+    @Type(() => Number)
     @IsInt()
     @Min(1)
     pageSize?: number;

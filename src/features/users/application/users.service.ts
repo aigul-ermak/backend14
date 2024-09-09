@@ -86,7 +86,7 @@ export class UsersService {
 
     async getAllUsers(
         sortData: SortUserDto
-    ): Promise<PaginatedDto<User>> {
+    ): Promise<PaginatedDto<UserOutputModel>> {
         const sortBy = sortData.sortBy ?? 'createdAt';
         const sortDirection = sortData.sortDirection ?? 'desc';
         const pageNumber = sortData.pageNumber ?? 1;
@@ -94,34 +94,40 @@ export class UsersService {
         const searchLoginTerm = sortData.searchLoginTerm ?? null;
         const searchEmailTerm = sortData.searchEmailTerm ?? null;
 
-        type FilterType = {
-            $or?: ({
-                $regex: string;
-                $options: string;
-            } | {})[];
-        };
-        let filter: FilterType = {$or: []};
+        let filter: any = {};
+        //let filter: any = { $or: [] };
+
+        // type FilterType = {
+        //     $or?: ({
+        //         $regex: string;
+        //         $options: string;
+        //     } | {})[];
+        // };
+
+        //let filter: FilterType = {$or: []};
         if (searchEmailTerm) {
             filter['$or']?.push({email: {$regex: searchEmailTerm, $options: 'i'}});
         }
         if (searchLoginTerm) {
             filter['$or']?.push({login: {$regex: searchLoginTerm, $options: 'i'}});
         }
-        if (filter['$or']?.length === 0) {
-            filter['$or']?.push({});
-        }
+        // if (filter['$or']?.length === 0) {
+        //     filter['$or']?.push({});
+        // }
 
-        //const users: WithId<UserType>[] = await UserModel
-        //TODO any here
-        const {users, totalCount}: any = await this.usersQueryRepository.findAllPaginated(filter, sortData)
-        const pageCount: number = Math.ceil(totalCount / +pageSize);
+        // const {users, totalCount}: any = await this.usersQueryRepository.findAllPaginated(filter, sortData)
+        // const pageCount: number = Math.ceil(totalCount / +pageSize);
+
+        const users = await this.usersQueryRepository.findAll(filter, sortBy, sortDirection, (pageNumber - 1) * pageSize, pageSize);
+        const totalCount = await this.usersQueryRepository.countDocuments(filter);
+        const pageCount = Math.ceil(totalCount / pageSize);
 
         return {
             pagesCount: pageCount,
             page: +pageNumber,
             pageSize: +pageSize,
             totalCount: totalCount,
-            items: users.map(UserOutputModelMapper)
+            items: users.map(UserOutputModelMapper),
         }
     }
 
