@@ -31,7 +31,15 @@ const usersProviders: Provider[] = [UsersRepository, UsersQueryRepository, Users
 
 @Module({
     imports: [
-        MongooseModule.forRoot(appSettings.api.MONGO_CONNECTION_URI),
+        MongooseModule.forRoot(
+            appSettings.env.isTesting()
+                ? `${appSettings.api.MONGO_CONNECTION_URI_FOR_TESTS}/${appSettings.api.TEST_DBName}`
+                : `${appSettings.api.MONGO_CONNECTION_URI}/${appSettings.api.MONGO_DBName}`
+        ),
+        // MongooseModule.forRoot(appSettings.api.MONGO_CONNECTION_URI, {
+        //     dbName: appSettings.api.MONGO_DBName,
+        // }),
+        //MongooseModule.forRoot(appSettings.api.MONGO_CONNECTION_URI),
         MongooseModule.forFeature([{name: User.name, schema: UsersEntity}]),
         UsersModule,
         TestingModule,
