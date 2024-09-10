@@ -2,9 +2,11 @@ import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {User, UserDocument} from '../domain/users.entity';
 import {FilterQuery, Model, SortOrder} from 'mongoose';
-import {UserOutputModel, UserOutputModelMapper} from "../api/models/output/user.output.model";
-import {UserDBType} from "../types/user.types";
-import {PaginatedDto} from "../api/models/output/paginated.users.dto";
+import {
+    UserOutputModel,
+    UserOutputModelMapper, UserWithIdOutputModel,
+    UserWithIdOutputModelMapper
+} from "../api/models/output/user.output.model";
 import {SortUserDto} from "../api/models/output/sort.user.dto";
 
 @Injectable()
@@ -26,7 +28,7 @@ export class UsersQueryRepository {
         return UserOutputModelMapper(user);
     }
 
-    async findOneByLoginOrEmail(loginOrEmail: string): Promise<User | null> {
+    async findOneByLoginOrEmail(loginOrEmail: string): Promise<UserWithIdOutputModel | null> {
         const user = await this.userModel.findOne({
             $or:
                 [
@@ -38,7 +40,7 @@ export class UsersQueryRepository {
         if (!user) {
             return null;
         }
-        return user;
+        return UserWithIdOutputModelMapper(user);
     }
 
 
