@@ -12,17 +12,6 @@ export class UsersQueryRepository {
     constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
     }
 
-    // async onModuleInit() {
-    //     try {
-    //         await this.userModel.collection.dropIndex('email_1');
-    //     } catch (err) {
-    //         if (err.code !== 27) {
-    //             // 27 = IndexNotFound
-    //             throw err;
-    //         }
-    //     }
-    // }
-
     async findOneByEmail(email: string): Promise<User | null> {
         return this.userModel.findOne({"accountData.email": email}).exec();
     }
@@ -40,13 +29,15 @@ export class UsersQueryRepository {
     async findOneByLoginOrEmail(loginOrEmail: string): Promise<User | null> {
         const user = await this.userModel.findOne({
             $or:
-                [{'accountData.login': loginOrEmail}, {'accountData.email': loginOrEmail}]
+                [
+                    {'accountData.login': loginOrEmail},
+                    {'accountData.email': loginOrEmail}
+                ]
         })
 
         if (!user) {
             return null;
         }
-
         return user;
     }
 
