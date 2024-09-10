@@ -89,9 +89,16 @@ export class AuthController {
             createUserDto
         );
 
-        if (!result) {
-            throw new BadRequestException();
-        }
+        // if (result === null) {
+        //     throw new BadRequestException({
+        //         errorsMessages: [
+        //             {
+        //                 message: 'User with this email or login already exists',
+        //                 field: 'email'
+        //             }
+        //         ]
+        //     });
+        // }
     }
 
     // @Post('/registration-email-sending')
