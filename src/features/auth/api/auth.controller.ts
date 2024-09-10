@@ -22,6 +22,7 @@ import {CreateUserDto} from "../../users/api/models/input/create-user.input.dto"
 import {UserOutputModel} from "../../users/api/models/output/user.output.model";
 import {OutputUserItemType} from "../../users/types/user.types";
 import {AuthGuard} from "../../../infrastructure/guards/auth.guard";
+import {ResendEmailDto} from "../../email/models/input/email.input.dto";
 
 
 @Controller('auth')
@@ -101,17 +102,13 @@ export class AuthController {
         // }
     }
 
-    // @Post('/registration-email-sending')
-    // @HttpCode(204)
-    // async registerEmailSending() {
-    //
-    //     const result: boolean = await this.authService.confirmEmail(code);
-    //
-    //     if (!result) {
-    //         throw new BadRequestException()
-    //     }
-    //
-    // }
+    @Post('/registration-email-resending')
+    @HttpCode(204)
+    async sendNewCodeToEmail(@Body() resendEmailDto: ResendEmailDto) {
+        const {email} = resendEmailDto;
+        await this.authService.sendNewCodeToEmail(email);
+
+    }
 
     @UseGuards(AuthGuard)
     @Get('/me')
