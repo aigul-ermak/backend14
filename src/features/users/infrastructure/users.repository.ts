@@ -11,17 +11,6 @@ export class UsersRepository {
     constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
     }
 
-    // async onModuleInit() {
-    //     try {
-    //         await this.userModel.collection.dropIndex('email_1');
-    //     } catch (err) {
-    //         if (err.code !== 27) {
-    //             // 27 = IndexNotFound
-    //             throw err;
-    //         }
-    //     }
-    // }
-
     async createUser(user: UserDBType) {
         const result = await this.userModel.create(user);
         return result._id.toString();
