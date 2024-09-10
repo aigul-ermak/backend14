@@ -1,8 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {User, UserDocument} from '../domain/users.entity';
-import {Model, Schema, SortOrder} from 'mongoose';
-import {CreateUserDto} from "../api/models/input/create-user.input.dto";
+import {Model} from 'mongoose';
 import {UserDBType} from "../types/user.types";
 
 
@@ -34,6 +33,14 @@ export class UsersRepository {
             .updateOne({_id: id}, {$set: {'emailConfirmation.isConfirmed': true}})
 
         console.log(result);
+        //return !!result.modifiedCount;
+        return true;
+    }
+
+    async updateCode(id: string, code: string): Promise<boolean> {
+        let result = await this.userModel
+            .updateOne({_id: id}, {$set: {'emailConfirmation.confirmationCode': code}})
+
         //return !!result.modifiedCount;
         return true;
     }
