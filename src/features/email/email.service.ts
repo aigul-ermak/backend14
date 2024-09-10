@@ -1,6 +1,7 @@
 import {Injectable} from "@nestjs/common";
 import {EmailAdapter} from "./email-adapter.service";
 import {UserDBType} from "../users/types/user.types";
+import {UserWithIdOutputModel} from "../users/api/models/output/user.output.model";
 
 @Injectable()
 export class EmailService {
@@ -17,7 +18,7 @@ export class EmailService {
         await this.emailAdapter.sendEmail(user.accountData.email, 'Email Confirmation', message);
     }
 
-    async sendEmailMessage(user: UserDBType | null): Promise<void> {
+    async sendEmailMessage(user: UserWithIdOutputModel | null): Promise<void> {
         if (!user) {
             return;
         }
