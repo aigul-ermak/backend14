@@ -27,12 +27,6 @@ export class AuthService {
     ) {
     }
 
-    // validateToken(token: string) {
-    //     return this.jwtService.verify(token, {
-    //         secret : process.env.JWT_SECRET_KEY
-    //     });
-    // }
-
     async validateUser(loginOrEmail: string, password: string) {
         //let user: User | null = null;
 
@@ -63,12 +57,27 @@ export class AuthService {
 
     async createUser(createUserDto: CreateUserDto) {
 
-        const existsUser = await this.usersQueryRepository.findOneByLoginOrEmail(createUserDto.email);
+        const existsUserByLogin = await this.usersQueryRepository.findOneByLoginOrEmail(createUserDto.login);
+        const existsUserByEmail = await this.usersQueryRepository.findOneByLoginOrEmail(createUserDto.email);
 
-        if (existsUser !== null) {
+        if (existsUserByLogin) {
             throw new BadRequestException({
                 errorsMessages: [
-                    {message: 'User with this email or login already exists', field: 'email'}
+                    {
+                        message: 'User with this login already exists',
+                        field: 'login',
+                    }
+                ]
+            });
+        }
+
+        if (existsUserByEmail) {
+            throw new BadRequestException({
+                errorsMessages: [
+                    {
+                        message: 'User with this email already exists',
+                        field: 'email',
+                    }
                 ]
             });
         }
@@ -104,8 +113,7 @@ export class AuthService {
 
         await this.emailService.sendEmailConfirmationMessage(newUser);
 
-        return newUser;
-
+        return res;
     }
 
     async confirmEmail(code: string): Promise<boolean> {
