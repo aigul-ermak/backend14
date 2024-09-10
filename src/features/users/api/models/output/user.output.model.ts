@@ -9,6 +9,39 @@ export class UserOutputModel {
     createdAt: Date
 }
 
+export class UserDBTypeModel {
+    accountData: {
+        login: string,
+        email: string,
+        passwordHash: string,
+        passwordRecoveryCode: string,
+        recoveryCodeExpirationDate: Date | null,
+        createdAt: string
+    }
+    emailConfirmation: {
+        confirmationCode: string,
+        expirationDate: Date | null,
+        isConfirmed: boolean
+    }
+}
+
+export class UserWithIdOutputModel {
+    id: string
+    accountData: {
+        passwordRecoveryCode: string;
+        createdAt: Date;
+        login: string;
+        recoveryCodeExpirationDate: Date | null;
+        email: string;
+        passwordHash: string
+    }
+    emailConfirmation: {
+        confirmationCode: string,
+        expirationDate: Date,
+        isConfirmed: boolean
+    }
+}
+
 //mappers
 
 export const UserOutputModelMapper = (user: UserDocument): UserOutputModel => {
@@ -33,21 +66,27 @@ export const UsersOutputModelMapper = (user: any) => {
     return outputModel;
 }
 
-// export const userMapper = (user: UserDBType): OutputUserItemType => {
-//     return {
-//         id: user.id.toString(),
-//         accountData: {
-//             login: user.accountData.login,
-//             email: user.accountData.email,
-//             passwordHash: user.accountData.passwordHash,
-//             passwordRecoveryCode: user.accountData.passwordRecoveryCode,
-//             recoveryCodeExpirationDate: user.accountData.recoveryCodeExpirationDate,
-//             createdAt: user.accountData.createdAt
-//         },
-//         emailConfirmation: {
-//             confirmationCode: user.emailConfirmation.confirmationCode,
-//             expirationDate: user.emailConfirmation.expirationDate,
-//             isConfirmed: user.emailConfirmation.isConfirmed
-//         }
-//     }
-// }
+export const UserWithIdOutputModelMapper = (user: any): UserWithIdOutputModel => {
+
+    const outputModel = new UserWithIdOutputModel();
+
+    outputModel.id = user.id;
+
+    outputModel.accountData = {
+        login: user.accountData.login,
+        email: user.accountData.email,
+        passwordHash: user.accountData.passwordHash,
+        passwordRecoveryCode: user.accountData.passwordRecoveryCode,
+        recoveryCodeExpirationDate: user.accountData.recoveryCodeExpirationDate,
+        createdAt: user.accountData.createdAt
+    };
+
+    outputModel.emailConfirmation = {
+        confirmationCode: user.emailConfirmation.confirmationCode,
+        expirationDate: user.emailConfirmation.expirationDate,
+        isConfirmed: user.emailConfirmation.isConfirmed
+    };
+
+
+    return outputModel;
+}
