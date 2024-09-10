@@ -7,10 +7,10 @@ export type UserDocument = HydratedDocument<User>;
 
 @Schema()
 export class AccountData {
-    @Prop()
+    @Prop({required: true, unique: true})
     login: string;
 
-    @Prop({required: true})
+    @Prop({required: true, unique: true})
     email: string;
 
     @Prop({required: true})
@@ -32,12 +32,7 @@ export class EmailConfirmation {
     @Prop({default: ""})
     confirmationCode: string;
 
-    @Prop({
-        default: add(new Date(), {
-            hours: 1,
-            minutes: 3,
-        }),
-    })
+    @Prop({type: Date, default: null})
     expirationDate: Date;
 
     @Prop({default: false})
@@ -73,27 +68,27 @@ export class User {
     // }> {
     //     const passwordHash = await User.hashPassword(password);
 
-        // Correctly assigning an object to 'user'
-        // const user = {
-        //     accountData: {
-        //         login,
-        //         email,
-        //         passwordHash,
-        //         passwordRecoveryCode: "",
-        //         recoveryCodeExpirationDate: null,
-        //         createdAt: new Date().toISOString(),
-        //     },
-        //     emailConfirmation: {
-        //         confirmationCode: "",
-        //         expirationDate: add(new Date(), {
-        //             hours: 1,
-        //             minutes: 3,
-        //         }),
-        //         isConfirmed: false,
-        //     },
-        // };
-        //
-        // return user;
+    // Correctly assigning an object to 'user'
+    // const user = {
+    //     accountData: {
+    //         login,
+    //         email,
+    //         passwordHash,
+    //         passwordRecoveryCode: "",
+    //         recoveryCodeExpirationDate: null,
+    //         createdAt: new Date().toISOString(),
+    //     },
+    //     emailConfirmation: {
+    //         confirmationCode: "",
+    //         expirationDate: add(new Date(), {
+    //             hours: 1,
+    //             minutes: 3,
+    //         }),
+    //         isConfirmed: false,
+    //     },
+    // };
+    //
+    // return user;
     // }
 
     // static async hashPassword(password: string): Promise<string> {
