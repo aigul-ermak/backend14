@@ -11,6 +11,7 @@ import {OutputUserItemType, UserDBType} from "../../users/types/user.types";
 import bcrypt from "bcrypt";
 import * as dateFns from "date-fns";
 import {jwtConstants} from "../constants";
+import {UserWithIdOutputModel} from "../../users/api/models/output/user.output.model";
 
 
 export type AccessToken = string;
@@ -131,6 +132,22 @@ export class AuthService {
 
     async findUserById(id: string) {
         return await this.usersQueryRepository.getUserById(id);
+    }
+
+    async sendNewCodeToEmail(email: string): Promise<boolean> {
+
+        const newCode: string = uuidv4();
+
+        let user: UserWithIdOutputModel | null = await this.usersQueryRepository.findOneByLoginOrEmail(email);
+
+        await this.usersRepository.updateCode(user!.id, newCode)
+
+        let userWithNewCode: UserWithIdOutputModel | null = await await this.usersQueryRepository.findOneByLoginOrEmail(user!.accountData.email);
+
+        await this.emailService.sendEmailMessage(userWithNewCode);
+
+        return true;
+
     }
 
 }
