@@ -125,7 +125,7 @@ export class AuthService {
             throw new BadRequestException({
                 errorsMessages: [
                     {
-                        message: 'Confirmation code do not exist',
+                        message: 'Confirmation code does not exist',
                         field: 'code',
                     }
                 ]
@@ -161,6 +161,17 @@ export class AuthService {
 
         let user: UserWithIdOutputModel | null = await this.usersQueryRepository.findOneByLoginOrEmail(email);
 
+        if (!user) {
+            throw new BadRequestException({
+                errorsMessages: [
+                    {
+                        message: 'Email does not exist',
+                        field: 'email',
+                    }
+                ]
+            });
+        }
+
         if (user!.emailConfirmation.isConfirmed) {
             throw new BadRequestException({
                 errorsMessages: [
@@ -171,6 +182,9 @@ export class AuthService {
                 ]
             });
         }
+
+        //update expiration date
+        //is confirmed = false
 
         await this.usersRepository.updateCode(user!.id, newCode)
 
