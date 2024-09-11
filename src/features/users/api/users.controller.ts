@@ -14,7 +14,6 @@ import {CreateUserDto} from "./models/input/create-user.input.dto";
 import {UserOutputModel} from "./models/output/user.output.model";
 import {UsersQueryRepository} from "../infrastructure/users.query-repository";
 import {BasicAuthGuard} from "../../auth/basic-auth.guard";
-import {GetAllUsersQueryDto} from "./models/output/users.output.model";
 import {SortUserDto} from "./models/output/sort.user.dto";
 
 @Controller('users')
@@ -54,36 +53,6 @@ export class UsersController {
     async getAllUsers(@Query() sortData: SortUserDto) {
         return this.usersService.getAllUsers(sortData);
     }
-
-    // @Get()
-    // async getAllUsers(
-    //     @Query() query: GetAllUsersQueryDto) {
-    //     const sort = query.sortBy ?? 'accountData.createdAt';
-    //     const direction = query.sortDirection?.toLowerCase() === 'asc' ? 'asc' : 'desc';
-    //     const page = query.pageNumber ?? 1;
-    //     const size = query.pageSize ?? 10;
-    //     const searchLogin = query.searchLoginTerm ?? '';
-    //     const searchEmail = query.searchEmailTerm ?? '';
-    //
-    //     //return this.userService.findAll();
-    //     const {users, totalCount} = await this.userService.getAllUsers(
-    //         sort,
-    //         direction,
-    //         page,
-    //         size,
-    //         searchLogin,
-    //         searchEmail,
-    //     );
-    //     const pagesCount = Math.ceil(totalCount / size);
-    //
-    //     return {
-    //         pagesCount,
-    //         page: +page,
-    //         pageSize: +size,
-    //         totalCount,
-    //         items: users,
-    //     };
-    // }
 
     @UseGuards(BasicAuthGuard)
     @Delete(':id')
