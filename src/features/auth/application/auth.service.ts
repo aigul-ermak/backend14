@@ -123,6 +123,17 @@ export class AuthService {
 
         if (!user) return false;
 
+        if (user.emailConfirmation.isConfirmed) {
+            throw new BadRequestException({
+                errorsMessages: [
+                    {
+                        message: 'Email already confirmed',
+                        field: 'code',
+                    }
+                ]
+            });
+        }
+
         if (user.emailConfirmation.confirmationCode === code) {
             let result: boolean = await this.usersRepository.updateConfirmation(user.id)
             return result
@@ -139,6 +150,17 @@ export class AuthService {
         const newCode: string = uuidv4();
 
         let user: UserWithIdOutputModel | null = await this.usersQueryRepository.findOneByLoginOrEmail(email);
+
+        if (user!.emailConfirmation.isConfirmed) {
+            throw new BadRequestException({
+                errorsMessages: [
+                    {
+                        message: 'Email already confirmed',
+                        field: 'email',
+                    }
+                ]
+            });
+        }
 
         await this.usersRepository.updateCode(user!.id, newCode)
 
