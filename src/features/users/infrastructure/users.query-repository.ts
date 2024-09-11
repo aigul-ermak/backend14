@@ -7,7 +7,7 @@ import {
     UserOutputModelMapper, UserWithIdOutputModel,
     UserWithIdOutputModelMapper
 } from "../api/models/output/user.output.model";
-import {SortUserDto} from "../api/models/output/sort.user.dto";
+
 
 @Injectable()
 export class UsersQueryRepository {
@@ -53,66 +53,16 @@ export class UsersQueryRepository {
         return user;
     }
 
-    // private buildFilter(searchLoginTerm?: string, searchEmailTerm?: string) {
-    //     type FilterType = {
-    //         $or?: ({
-    //             $regex: string;
-    //             $options: string;
-    //         } | {})[];
-    //     };
-    //
-    //     let filter: FilterType = { $or: [] };
-    //
-    //     if (searchEmailTerm) {
-    //         filter['$or']?.push({
-    //             email: { $regex: searchEmailTerm, $options: 'i' },
-    //         });
-    //     }
-    //
-    //     if (searchLoginTerm) {
-    //         filter['$or']?.push({
-    //             login: { $regex: searchLoginTerm, $options: 'i' },
-    //         });
-    //     }
-    //
-    //     // Remove $or if no conditions are present
-    //     if (filter['$or']?.length === 0) {
-    //         delete filter.$or;
-    //     }
-    //
-    //     return filter;
-    // }
+    async findAll(filter: any, sortBy: string, sortDirection: string, skip: number, limit: number) {
 
-    async findAllPaginated(filter, sortData: SortUserDto) {
-        const sortBy = sortData.sortBy ?? 'createdAt';
-        const sortDirection = sortData.sortDirection ?? 'desc';
-        const pageNumber = sortData.pageNumber ?? 1;
-        const pageSize = sortData.pageSize ?? 10;
-        const searchLoginTerm = sortData.searchLoginTerm ?? null;
-        const searchEmailTerm = sortData.searchEmailTerm ?? null;
-
-        console.log(`Sorting by: ${sortBy} in ${sortDirection} order`);
-        console.log(`Page number: ${pageNumber}, Page size: ${pageSize}`);
-
-        const users = await this.userModel
+        const result = await this.userModel
             .find(filter)
-            .sort({[sortBy]: sortDirection === 'desc' ? -1 : 1})
-            .skip((pageNumber - 1) * +pageSize)
-            .limit(+pageSize)
-            .exec();
-
-        const totalCount = await this.userModel.countDocuments(filter);
-
-        return {users, totalCount};
-    }
-
-    async findAll(filter: FilterQuery<User>, sortBy: string, sortDirection: string, skip: number, limit: number) {
-        return this.userModel
-            .find(filter)
-            .sort({[sortBy]: sortDirection === 'desc' ? -1 : 1})
+            .sort({[`accountData.${sortBy}`]: (sortDirection === 'desc' ? -1 : 1) as SortOrder})
             .skip(skip)
             .limit(limit)
             .exec();
+
+        return result;
     }
 
     async countDocuments(filter: FilterQuery<User>): Promise<number> {
