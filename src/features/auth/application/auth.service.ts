@@ -121,7 +121,16 @@ export class AuthService {
 
         const user = await this.usersQueryRepository.findUserByConfirmationCode(code);
 
-        if (!user) return false;
+        if (!user) {
+            throw new BadRequestException({
+                errorsMessages: [
+                    {
+                        message: 'Confirmation code do not exist',
+                        field: 'code',
+                    }
+                ]
+            });
+        }
 
         if (user.emailConfirmation.isConfirmed) {
             throw new BadRequestException({
@@ -139,6 +148,7 @@ export class AuthService {
             return result
         }
         return false;
+
     }
 
     async findUserById(id: string) {
