@@ -30,11 +30,14 @@ export class UsersRepository {
 
     async updateConfirmation(id: string): Promise<boolean> {
         let result = await this.userModel
-            .updateOne({_id: id}, {$set: {'emailConfirmation.isConfirmed': true}})
-
+            .updateOne(
+                {_id: id},
+                {
+                    $set: {'emailConfirmation.isConfirmed': true}
+                }
+            )
         console.log(result);
-        //return !!result.modifiedCount;
-        return true;
+        return result.modifiedCount > 0;
     }
 
     async updateCode(id: string, code: string): Promise<boolean> {
