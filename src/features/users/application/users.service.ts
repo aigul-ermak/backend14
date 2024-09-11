@@ -2,10 +2,9 @@ import {ConflictException, Injectable} from '@nestjs/common';
 import {User} from '../domain/users.entity';
 
 import {UsersRepository} from '../infrastructure/users.repository';
-import {UserOutputModel, UserOutputModelMapper, UsersOutputModelMapper} from "../api/models/output/user.output.model";
+import {UserOutputModel, UserOutputModelMapper} from "../api/models/output/user.output.model";
 import {UsersQueryRepository} from "../infrastructure/users.query-repository";
 import {UserDBType} from "../types/user.types";
-import {add} from "date-fns";
 import bcrypt from "bcrypt";
 import {SortUserDto} from "../api/models/output/sort.user.dto";
 import {PaginatedDto} from "../api/models/output/paginated.users.dto";
@@ -55,11 +54,6 @@ export class UsersService {
         return await this.usersRepository.createUser(newUser);
     }
 
-    // async getById(userId: string): Promise<UserOutputModel | null> {
-    //   return this.usersRepository.getById(userId);
-    // }
-
-
     async findAll(): Promise<User[]> {
         return this.usersRepository.findAll();
     }
@@ -95,30 +89,35 @@ export class UsersService {
         const searchEmailTerm = sortData.searchEmailTerm ?? null;
 
         let filter: any = {};
-        //let filter: any = { $or: [] };
 
-        // type FilterType = {
-        //     $or?: ({
-        //         $regex: string;
-        //         $options: string;
-        //     } | {})[];
-        // };
-
-        //let filter: FilterType = {$or: []};
-        if (searchEmailTerm) {
-            filter['$or']?.push({email: {$regex: searchEmailTerm, $options: 'i'}});
+        if (searchEmailTerm || searchLoginTerm) {
+            filter['$or'] = [];
+            if (searchEmailTerm) {
+                filter['$or'].push({
+                    'accountData.email':
+                        {
+                            $regex: searchEmailTerm,
+                            $options: 'i'
+                        }
+                });
+            }
+            if (searchLoginTerm) {
+                filter['$or'].push({
+                    'accountData.login':
+                        {
+                            $regex: searchLoginTerm,
+                            $options: 'i'
+                        }
+                });
+            }
         }
-        if (searchLoginTerm) {
-            filter['$or']?.push({login: {$regex: searchLoginTerm, $options: 'i'}});
+
+        if (!filter['$or']?.length) {
+            filter = {};
         }
-        // if (filter['$or']?.length === 0) {
-        //     filter['$or']?.push({});
-        // }
 
-        // const {users, totalCount}: any = await this.usersQueryRepository.findAllPaginated(filter, sortData)
-        // const pageCount: number = Math.ceil(totalCount / +pageSize);
-
-        const users = await this.usersQueryRepository.findAll(filter, sortBy, sortDirection, (pageNumber - 1) * pageSize, pageSize);
+        const users = await this.usersQueryRepository
+            .findAll(filter, sortBy, sortDirection, (pageNumber - 1) * pageSize, pageSize);
         const totalCount = await this.usersQueryRepository.countDocuments(filter);
         const pageCount = Math.ceil(totalCount / pageSize);
 
@@ -131,20 +130,4 @@ export class UsersService {
         }
     }
 
-    async checkCredentials(loginOrEmail: string, password: string) {
-
-        const user = await this.usersQueryRepository.findOneByLoginOrEmail(loginOrEmail);
-
-        if (!user) {
-            return null;
-        }
-
-        //const isMatch = await bcrypt.compare(password, user.password);
-
-        // if (isMatch) {
-        //     return user;
-        // }
-
-        return null;
-    }
 }
