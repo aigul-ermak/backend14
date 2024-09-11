@@ -36,7 +36,7 @@ export class UsersRepository {
                     $set: {'emailConfirmation.isConfirmed': true}
                 }
             )
-        console.log(result);
+
         return result.modifiedCount > 0;
     }
 
@@ -44,8 +44,7 @@ export class UsersRepository {
         let result = await this.userModel
             .updateOne({_id: id}, {$set: {'emailConfirmation.confirmationCode': code}})
 
-        //return !!result.modifiedCount;
-        return true;
+        return result.modifiedCount > 0;
     }
 
 }
