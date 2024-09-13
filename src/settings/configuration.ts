@@ -38,6 +38,11 @@ const getConfig = (
             EMAIL_USER: environmentVariables.EMAIL_USER,
             EMAIL_PASS: environmentVariables.EMAIL_PASS,
         },
+
+        basicAuthSettings: {
+            BASIC_AUTH_USERNAME: environmentVariables.HTTP_BASIC_USER,
+            BASIC_AUTH_PASSWORD: environmentVariables.HTTP_BASIC_PASS,
+        },
     };
 };
 
