@@ -89,17 +89,6 @@ export class AuthController {
         const result = await this.authService.createUser(
             createUserDto
         );
-
-        // if (result === null) {
-        //     throw new BadRequestException({
-        //         errorsMessages: [
-        //             {
-        //                 message: 'User with this email or login already exists',
-        //                 field: 'email'
-        //             }
-        //         ]
-        //     });
-        // }
     }
 
     @Post('/registration-email-resending')
