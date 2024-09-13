@@ -53,7 +53,7 @@ export class AuthService {
 
     async loginUser(user: any) {
         const payload = {loginOrEmail: user.email, id: user.id};
-        return {accessToken: this.jwtService.sign(payload, {secret: jwtConstants.JWT_SECRET})};
+        return {accessToken: this.jwtService.sign(payload, {secret: jwtConstants.jwr_secret})};
     }
 
     async createUser(createUserDto: CreateUserDto) {
