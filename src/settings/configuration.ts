@@ -33,6 +33,11 @@ const getConfig = (
             isTesting: currentEnvironment === Environments.TEST,
             isDevelopment: currentEnvironment === Environments.DEVELOPMENT,
         },
+
+        emailSettings: {
+            EMAIL_USER: environmentVariables.EMAIL_USER,
+            EMAIL_PASS: environmentVariables.EMAIL_PASS,
+        },
     };
 };
 
