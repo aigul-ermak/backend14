@@ -4,10 +4,9 @@ import {
     NestModule,
     Provider,
 } from '@nestjs/common';
-import {MongooseModule, MongooseModuleAsyncOptions} from '@nestjs/mongoose';
+import {MongooseModule} from '@nestjs/mongoose';
 import {UsersRepository} from './features/users/infrastructure/users.repository';
 import {UsersService} from './features/users/application/users.service';
-import {appSettings, Environments} from './settings/app.setting';
 import {User, UsersEntity} from './features/users/domain/users.entity';
 import {UsersController} from './features/users/api/users.controller';
 import {LoggerMiddleware} from './infrastructure/middlewares/logger.middleware';
