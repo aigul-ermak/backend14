@@ -21,9 +21,11 @@ import {UsersQueryRepository} from "./features/users/infrastructure/users.query-
 import {EmailModule} from "./features/email/email.module";
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import configuration, {ConfigurationType} from "./settings/configuration";
+import {CreateUserUseCase} from "./features/usecases/createUserUseCase";
 
 
 const usersProviders: Provider[] = [UsersRepository, UsersQueryRepository, UsersService];
+const usecases = [CreateUserUseCase]
 
 @Module({
     imports: [
@@ -58,7 +60,7 @@ const usersProviders: Provider[] = [UsersRepository, UsersQueryRepository, Users
         AuthModule,
         EmailModule,
     ],
-    providers: [...usersProviders, AuthService],
+    providers: [...usersProviders, AuthService, ...usecases],
     controllers: [UsersController, AuthController],
 })
 export class AppModule implements NestModule {

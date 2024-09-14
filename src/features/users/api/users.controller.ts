@@ -15,6 +15,7 @@ import {UserOutputModel} from "./models/output/user.output.model";
 import {UsersQueryRepository} from "../infrastructure/users.query-repository";
 import {BasicAuthGuard} from "../../auth/basic-auth.guard";
 import {SortUserDto} from "./models/output/sort.user.dto";
+import {CreateUserUseCase} from "../../usecases/createUserUseCase";
 
 @Controller('users')
 export class UsersController {
@@ -23,6 +24,7 @@ export class UsersController {
     constructor(
         userService: UsersService,
         private readonly usersQueryRepository: UsersQueryRepository,
+        private createUserUseCase: CreateUserUseCase,
     ) {
         this.usersService = userService;
     }
@@ -34,7 +36,7 @@ export class UsersController {
         @Body() createUserDto: CreateUserDto,
     ): Promise<UserOutputModel> {
 
-        const userId = await this.usersService.createUser(
+        const userId = await this.createUserUseCase.execute(
             createUserDto.email,
             createUserDto.login,
             createUserDto.password,

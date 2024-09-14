@@ -1,11 +1,9 @@
-import {ConflictException, Injectable} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {User} from '../domain/users.entity';
 
 import {UsersRepository} from '../infrastructure/users.repository';
 import {UserOutputModel, UserOutputModelMapper} from "../api/models/output/user.output.model";
 import {UsersQueryRepository} from "../infrastructure/users.query-repository";
-import {UserDBType} from "../types/user.types";
-import bcrypt from "bcrypt";
 import {SortUserDto} from "../api/models/output/sort.user.dto";
 import {PaginatedDto} from "../api/models/output/paginated.users.dto";
 
@@ -16,42 +14,6 @@ export class UsersService {
         private usersRepository: UsersRepository,
         private usersQueryRepository: UsersQueryRepository,
     ) {
-    }
-
-    async createUser(
-        email: string,
-        login: string,
-        password: string,
-    ) {
-
-        const existingUser = await this.usersQueryRepository.findOneByEmail(email);
-
-        if (existingUser) {
-            throw new ConflictException(`User with this email already exists`);
-        }
-
-        const saltRounds = 10;
-        const passwordHashed = await bcrypt.hash(password, saltRounds);
-
-
-        const newUser: UserDBType = {
-            accountData: {
-                login: login,
-                email: email,
-                passwordHash: passwordHashed,
-                passwordRecoveryCode: "",
-                recoveryCodeExpirationDate: null,
-                createdAt: new Date().toISOString()
-            },
-            emailConfirmation: {
-                confirmationCode: "",
-                expirationDate: null,
-
-                isConfirmed: false
-            }
-        }
-
-        return await this.usersRepository.createUser(newUser);
     }
 
     async findAll(): Promise<User[]> {
@@ -131,3 +93,5 @@ export class UsersService {
     }
 
 }
+
+
