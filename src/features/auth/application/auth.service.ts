@@ -1,20 +1,17 @@
 import {BadRequestException, Injectable, UnauthorizedException} from '@nestjs/common';
 import {UsersService} from "../../users/application/users.service";
 import {JwtService} from "@nestjs/jwt";
-import {User} from "../../users/domain/users.entity";
 import {UsersQueryRepository} from "../../users/infrastructure/users.query-repository";
 import {UsersRepository} from "../../users/infrastructure/users.repository";
 import {EmailService} from "../../email/email.service";
 import {v4 as uuidv4} from 'uuid';
 import {CreateUserDto} from "../../users/api/models/input/create-user.input.dto";
-import {OutputUserItemType, UserDBType} from "../../users/types/user.types";
 import bcrypt from "bcrypt";
 import * as dateFns from "date-fns";
 import {jwtConstants} from "../constants";
 import {UserWithIdOutputModel} from "../../users/api/models/output/user.output.model";
+import {UserDBModel} from "../../users/api/models/input/user-db.input.model";
 
-
-export type AccessToken = string;
 
 @Injectable()
 export class AuthService {
@@ -87,7 +84,7 @@ export class AuthService {
         const saltRounds = 10;
         const passwordHashed = await bcrypt.hash(createUserDto.password, saltRounds);
 
-        const newUser: UserDBType = {
+        const newUser: UserDBModel = {
             accountData: {
                 login: createUserDto.login,
                 email: createUserDto.email,

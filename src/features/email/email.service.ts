@@ -1,14 +1,15 @@
 import {Injectable} from "@nestjs/common";
 import {EmailAdapter} from "./email-adapter.service";
-import {UserDBType} from "../users/types/user.types";
+
 import {UserWithIdOutputModel} from "../users/api/models/output/user.output.model";
+import {UserDBModel} from "../users/api/models/input/user-db.input.model";
 
 @Injectable()
 export class EmailService {
     constructor(private readonly emailAdapter: EmailAdapter) {
     }
 
-    async sendEmailConfirmationMessage(user: UserDBType): Promise<void> {
+    async sendEmailConfirmationMessage(user: UserDBModel): Promise<void> {
         const code: string = user.emailConfirmation.confirmationCode;
         const message: string = `
       <h1>Thanks for your registration</h1>
