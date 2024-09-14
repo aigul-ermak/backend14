@@ -1,5 +1,4 @@
-import {User, UserDocument} from "../../../domain/users.entity";
-import {OutputUserItemType, UserDBType} from "../../../types/user.types";
+import {UserDocument} from "../../../domain/users.entity";
 
 
 export class UserOutputModel {
@@ -7,22 +6,6 @@ export class UserOutputModel {
     login: string
     email: string
     createdAt: Date
-}
-
-export class UserDBTypeModel {
-    accountData: {
-        login: string,
-        email: string,
-        passwordHash: string,
-        passwordRecoveryCode: string,
-        recoveryCodeExpirationDate: Date | null,
-        createdAt: string
-    }
-    emailConfirmation: {
-        confirmationCode: string,
-        expirationDate: Date | null,
-        isConfirmed: boolean
-    }
 }
 
 export class UserWithIdOutputModel {
