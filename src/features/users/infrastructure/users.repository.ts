@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {User, UserDocument} from '../domain/users.entity';
 import {Model} from 'mongoose';
-import {UserDBType} from "../types/user.types";
+import {UserDBModel} from "../api/models/input/user-db.input.model";
 
 
 @Injectable()
@@ -10,7 +10,7 @@ export class UsersRepository {
     constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
     }
 
-    async createUser(user: UserDBType) {
+    async createUser(user: UserDBModel) {
         const result = await this.userModel.create(user);
         return result._id.toString();
     }
