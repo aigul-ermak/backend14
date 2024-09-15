@@ -21,6 +21,8 @@ import {CreateBlogUseCase} from "../../usecases/createBlogUseCase";
 import {GetBlogByIdUseCase} from "../../usecases/getBlogByIdUseCase";
 import {BlogOutputModel} from "./models/output/blog.output.model";
 import {BasicAuthGuard} from "../../auth/basic-auth.guard";
+import {SortBlogsDto} from "./models/input/sort-blog.input.dto";
+import {GetAllBlogsUseCase} from "../../usecases/getAllBlogsUseCase";
 
 @Controller('blogs')
 export class BlogsController {
@@ -30,6 +32,7 @@ export class BlogsController {
         private postsService: PostsService,
         private createBlogUseCase: CreateBlogUseCase,
         private getUserByIdUseCase: GetBlogByIdUseCase,
+        private getAllBlogsUseCase: GetAllBlogsUseCase
     ) {
     }
 
@@ -92,34 +95,8 @@ export class BlogsController {
 
     @Get()
     async getAllBlogs(
-        @Query('searchNameTerm') searchNameTerm?: string,
-        @Query('sortBy') sortBy?: string,
-        @Query('sortDirection') sortDirection?: string,
-        @Query('pageNumber') pageNumber?: number,
-        @Query('pageSize') pageSize?: number,
-    ) {
-        const searchTerm = searchNameTerm ?? '';
-        const sort = sortBy ?? 'createdAt';
-        const direction = sortDirection?.toLowerCase() === 'asc' ? 'asc' : 'desc';
-        const page = pageNumber ?? 1;
-        const size = pageSize ?? 10;
-
-        const {blogs, totalCount} = await this.blogsService.findAllPaginated(
-            searchTerm,
-            sort,
-            direction,
-            page,
-            size,
-        );
-        const pagesCount = Math.ceil(totalCount / size);
-
-        return {
-            pagesCount,
-            page: +page,
-            pageSize: +size,
-            totalCount,
-            items: blogs,
-        };
+        @Query() sortData: SortBlogsDto) {
+        return this.getAllBlogsUseCase.execute(sortData);
     }
 
     @Get(':id/posts')

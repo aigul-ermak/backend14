@@ -14,9 +14,9 @@ export class BlogsRepository {
         return res[0];
     }
 
-    async findAll(): Promise<Blog[]> {
-        return this.blogModel.find().exec();
-    }
+    // async findAll(): Promise<Blog[]> {
+    //     return this.blogModel.find().exec();
+    // }
 
     // async findById(id: string): Promise<Blog | null> {
     //   return this.blogModel.findById(id).exec();
@@ -31,33 +31,33 @@ export class BlogsRepository {
         return this.blogModel.findOne({name}).exec();
     }
 
-    async findAllPaginated(
-        searchTerm: string,
-        sort: string,
-        sortDirection: 'asc' | 'desc',
-        page: number,
-        pageSize: number,
-    ): Promise<{ blogs: BlogDocument[]; totalCount: number }> {
-        const skip = (page - 1) * pageSize;
-        const sortOption: { [key: string]: SortOrder } = {
-            [sort]: sortDirection === 'asc' ? 1 : -1,
-        };
-        const searchFilter = searchTerm
-            ? {name: new RegExp(searchTerm, 'i')}
-            : {};
-
-        const [blogs, totalCount] = await Promise.all([
-            this.blogModel
-                .find(searchFilter)
-                .sort(sortOption)
-                .skip(skip)
-                .limit(pageSize)
-                .exec(),
-            this.blogModel.countDocuments(searchFilter),
-        ]);
-
-        return {blogs, totalCount};
-    }
+    // async findAllPaginated(
+    //     searchTerm: string,
+    //     sort: string,
+    //     sortDirection: 'asc' | 'desc',
+    //     page: number,
+    //     pageSize: number,
+    // ): Promise<{ blogs: BlogDocument[]; totalCount: number }> {
+    //     const skip = (page - 1) * pageSize;
+    //     const sortOption: { [key: string]: SortOrder } = {
+    //         [sort]: sortDirection === 'asc' ? 1 : -1,
+    //     };
+    //     const searchFilter = searchTerm
+    //         ? {name: new RegExp(searchTerm, 'i')}
+    //         : {};
+    //
+    //     const [blogs, totalCount] = await Promise.all([
+    //         this.blogModel
+    //             .find(searchFilter)
+    //             .sort(sortOption)
+    //             .skip(skip)
+    //             .limit(pageSize)
+    //             .exec(),
+    //         this.blogModel.countDocuments(searchFilter),
+    //     ]);
+    //
+    //     return {blogs, totalCount};
+    // }
 
     async update(id: string, updateBlogDto: UpdateBlogDto) {
         return this.blogModel

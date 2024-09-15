@@ -30,12 +30,12 @@ import {BlogsQueryRepository} from "./features/blogs/infrastructure/blogs.query-
 import {BlogsService} from "./features/blogs/application/blogs.service";
 import {BlogsModule} from "./features/blogs/blogs.module";
 import {Blog, BlogEntity} from "./features/blogs/domain/blog.entity";
-
+import {GetAllBlogsUseCase} from "./features/usecases/getAllBlogsUseCase";
 
 
 const usersProviders: Provider[] = [UsersRepository, UsersQueryRepository, UsersService];
 const blogsProviders: Provider[] = [BlogsRepository, BlogsQueryRepository, BlogsService]
-const useCases = [CreateUserUseCase, CreateBlogUseCase, GetBlogByIdUseCase]
+const useCases = [CreateUserUseCase, CreateBlogUseCase, GetBlogByIdUseCase, GetAllBlogsUseCase]
 
 @Module({
     imports: [
@@ -64,7 +64,7 @@ const useCases = [CreateUserUseCase, CreateBlogUseCase, GetBlogByIdUseCase]
         }),
         MongooseModule.forFeature([
             {name: User.name, schema: UsersEntity},
-            { name: Blog.name, schema: BlogEntity }]),
+            {name: Blog.name, schema: BlogEntity}]),
         UsersModule,
         TestingModule,
         PostsModule,
