@@ -17,6 +17,6 @@ export class GetBlogByIdUseCase {
             throw new NotFoundException(`Blog not found`);
         }
 
-        return blog;
+        return BlogOutputModelMapper(blog);
     }
 }
