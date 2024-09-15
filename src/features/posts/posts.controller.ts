@@ -11,9 +11,9 @@ import {
   Query,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
-import { Blog } from '../blogs/blogs.schema';
+import { Blog } from '../blogs/domain/blog.entity';
 import { CreatePostDto, UpdatePostDto } from './dto/create-post.dto';
-import { UpdateBlogDto } from '../blogs/dto/create-blog.dto';
+import { UpdateBlogDto } from '../blogs/api/models/input/create-blog.input.dto';
 
 @Controller('posts')
 export class PostsController {
