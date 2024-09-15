@@ -1,17 +1,19 @@
-import { Module } from '@nestjs/common';
-import { BlogsController } from './blogs.controller';
-import { BlogsService } from './blogs.service';
-import { BlogsRepository } from './blogs.repo';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Blog, BlogsSchema } from './blogs.schema';
-import { PostsModule } from '../posts/posts.module';
+import {Module} from '@nestjs/common';
+import {BlogsController} from './api/blogs.controller';
+import {BlogsService} from './application/blogs.service';
+import {BlogsRepository} from './infrastructure/blogs.repository';
+import {MongooseModule} from '@nestjs/mongoose';
+import {Blog, BlogEntity} from './domain/blog.entity';
+import {BlogsQueryRepository} from "./infrastructure/blogs.query-repository";
+
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: Blog.name, schema: BlogsSchema }]),
-    PostsModule,
-  ],
-  providers: [BlogsService, BlogsRepository],
-  controllers: [BlogsController],
+    imports: [
+        MongooseModule.forFeature([{name: Blog.name, schema: BlogEntity}]),
+    ],
+    providers: [BlogsService, BlogsRepository, BlogsQueryRepository],
+    //controllers: [BlogsController],
+    exports: [BlogsRepository, BlogsQueryRepository]
 })
-export class BlogsModule {}
+export class BlogsModule {
+}
