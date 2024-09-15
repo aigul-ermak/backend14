@@ -13,7 +13,6 @@ import {LoggerMiddleware} from './infrastructure/middlewares/logger.middleware';
 import {UsersModule} from "./features/users/users.module";
 import {TestingModule} from "./features/testing/testing-module";
 import {PostsModule} from "./features/posts/posts.module";
-import {BlogsModule} from "./features/blogs/blogs.module";
 import {AuthModule} from './features/auth/auth.module';
 import {AuthController} from './features/auth/api/auth.controller';
 import {AuthService} from './features/auth/application/auth.service';
@@ -22,10 +21,21 @@ import {EmailModule} from "./features/email/email.module";
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import configuration, {ConfigurationType} from "./settings/configuration";
 import {CreateUserUseCase} from "./features/usecases/createUserUseCase";
+import {CreateBlogUseCase} from "./features/usecases/createBlogUseCase";
+import {GetBlogByIdUseCase} from "./features/usecases/getBlogByIdUseCase";
+import {BlogsController} from "./features/blogs/api/blogs.controller";
+import {PostsController} from "./features/posts/posts.controller";
+import {BlogsRepository} from "./features/blogs/infrastructure/blogs.repository";
+import {BlogsQueryRepository} from "./features/blogs/infrastructure/blogs.query-repository";
+import {BlogsService} from "./features/blogs/application/blogs.service";
+import {BlogsModule} from "./features/blogs/blogs.module";
+import {Blog, BlogEntity} from "./features/blogs/domain/blog.entity";
+
 
 
 const usersProviders: Provider[] = [UsersRepository, UsersQueryRepository, UsersService];
-const usecases = [CreateUserUseCase]
+const blogsProviders: Provider[] = [BlogsRepository, BlogsQueryRepository, BlogsService]
+const useCases = [CreateUserUseCase, CreateBlogUseCase, GetBlogByIdUseCase]
 
 @Module({
     imports: [
@@ -52,7 +62,9 @@ const usecases = [CreateUserUseCase]
             },
             inject: [ConfigService],
         }),
-        MongooseModule.forFeature([{name: User.name, schema: UsersEntity}]),
+        MongooseModule.forFeature([
+            {name: User.name, schema: UsersEntity},
+            { name: Blog.name, schema: BlogEntity }]),
         UsersModule,
         TestingModule,
         PostsModule,
@@ -60,8 +72,8 @@ const usecases = [CreateUserUseCase]
         AuthModule,
         EmailModule,
     ],
-    providers: [...usersProviders, AuthService, ...usecases],
-    controllers: [UsersController, AuthController],
+    providers: [...usersProviders, ...blogsProviders, AuthService, BlogsService, ...useCases],
+    controllers: [UsersController, AuthController, BlogsController, PostsController],
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
