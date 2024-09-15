@@ -1,6 +1,6 @@
 export class BlogOutputModel {
     id: string;
-    login: string
+    name: string
     description: string
     websiteUrl: string
     createdAt: Date
@@ -11,7 +11,7 @@ export const BlogOutputModelMapper = (blog: any) => {
     const outputModel = new BlogOutputModel();
 
     outputModel.id = blog.id;
-    outputModel.login = blog.login;
+    outputModel.name = blog.name;
     outputModel.description = blog.description;
     outputModel.websiteUrl = blog.websiteUrl;
     outputModel.createdAt = blog.createdAt;
