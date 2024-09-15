@@ -40,26 +40,17 @@ export class BlogsController {
             createBlogDto: CreateBlogInputDto,
     ): Promise<BlogOutputModel> {
 
-        const blogId = createBlogDto;
-        const createdBlog = await this.createBlogUseCase.execute(
+        const newBlogId = await this.createBlogUseCase.execute(
             createBlogDto
         );
 
-        const blog = await this.getUserByIdUseCase.execute(blogId)
+        const blog: BlogOutputModel | null = await this.getUserByIdUseCase.execute(newBlogId)
 
         if (!blog) {
             throw new NotFoundException('Blog not found');
         }
 
         return blog;
-        // return {
-        //   id: createdBlog!._id.toString(),
-        //   name: createdBlog!.name,
-        //   description: createdBlog!.description,
-        //   websiteUrl: createdBlog!.websiteUrl,
-        //   createdAt: createdBlog!.createdAt,
-        //   isMembership: createdBlog!.isMembership,
-        // };
     }
 
     @Put(':id')
