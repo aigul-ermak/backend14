@@ -31,11 +31,12 @@ import {BlogsService} from "./features/blogs/application/blogs.service";
 import {BlogsModule} from "./features/blogs/blogs.module";
 import {Blog, BlogEntity} from "./features/blogs/domain/blog.entity";
 import {GetAllBlogsUseCase} from "./features/usecases/getAllBlogsUseCase";
+import {DeleteBlogByIdUseCase} from "./features/usecases/deleteBlogByIdUseCase";
 
 
 const usersProviders: Provider[] = [UsersRepository, UsersQueryRepository, UsersService];
 const blogsProviders: Provider[] = [BlogsRepository, BlogsQueryRepository, BlogsService]
-const useCases = [CreateUserUseCase, CreateBlogUseCase, GetBlogByIdUseCase, GetAllBlogsUseCase]
+const useCases = [CreateUserUseCase, CreateBlogUseCase, GetBlogByIdUseCase, GetAllBlogsUseCase, DeleteBlogByIdUseCase]
 
 @Module({
     imports: [

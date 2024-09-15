@@ -23,6 +23,7 @@ import {BlogOutputModel} from "./models/output/blog.output.model";
 import {BasicAuthGuard} from "../../auth/basic-auth.guard";
 import {SortBlogsDto} from "./models/input/sort-blog.input.dto";
 import {GetAllBlogsUseCase} from "../../usecases/getAllBlogsUseCase";
+import {DeleteBlogByIdUseCase} from "../../usecases/deleteBlogByIdUseCase";
 
 @Controller('blogs')
 export class BlogsController {
@@ -32,7 +33,8 @@ export class BlogsController {
         private postsService: PostsService,
         private createBlogUseCase: CreateBlogUseCase,
         private getUserByIdUseCase: GetBlogByIdUseCase,
-        private getAllBlogsUseCase: GetAllBlogsUseCase
+        private getAllBlogsUseCase: GetAllBlogsUseCase,
+        private deleteBlogByIdUseCase: DeleteBlogByIdUseCase,
     ) {
     }
 
@@ -161,12 +163,13 @@ export class BlogsController {
         return this.getUserByIdUseCase.execute(id);
     }
 
+    @UseGuards(BasicAuthGuard)
     @Delete(':id')
     @HttpCode(204)
-    async deleteBlog(@Param('id') id: string): Promise<void> {
-        const result = await this.blogsService.deleteBlogById(id);
+    async deleteBlog(@Param('id') blogId: string): Promise<void> {
+        const result = await this.deleteBlogByIdUseCase.execute(blogId);
         if (!result) {
-            throw new NotFoundException(`Blog with id ${id} not found`);
+            throw new NotFoundException(`Blog with id not found`);
         }
     }
 }
