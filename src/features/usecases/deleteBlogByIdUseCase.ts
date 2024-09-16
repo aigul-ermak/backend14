@@ -1,16 +1,19 @@
-import {Injectable} from "@nestjs/common";
-import {BlogsQueryRepository} from "../blogs/infrastructure/blogs.query-repository";
-import {SortBlogsDto} from "../blogs/api/models/input/sort-blog.input.dto";
 import {BlogsRepository} from "../blogs/infrastructure/blogs.repository";
+import {CommandHandler, ICommandHandler} from "@nestjs/cqrs";
 
+export class DeleteBlogByIdUseCaseCommand {
+    constructor(public id: string) {
+    }
+}
 
-@Injectable()
-export class DeleteBlogByIdUseCase {
-    constructor(private blogsRepository: BlogsRepository) {
+@CommandHandler(DeleteBlogByIdUseCaseCommand)
+export class DeleteBlogByIdUseCase implements ICommandHandler<DeleteBlogByIdUseCaseCommand> {
+    constructor(
+        private blogsRepository: BlogsRepository) {
     }
 
-    async execute(blogId) {
-        return await this.blogsRepository.deleteById(blogId);
+    async execute(command: DeleteBlogByIdUseCaseCommand) {
+        return await this.blogsRepository.deleteById(command.id);
     }
 
 }

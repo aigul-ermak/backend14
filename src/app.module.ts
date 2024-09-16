@@ -32,6 +32,7 @@ import {BlogsModule} from "./features/blogs/blogs.module";
 import {Blog, BlogEntity} from "./features/blogs/domain/blog.entity";
 import {GetAllBlogsUseCase} from "./features/usecases/getAllBlogsUseCase";
 import {DeleteBlogByIdUseCase} from "./features/usecases/deleteBlogByIdUseCase";
+import {CqrsModule} from "@nestjs/cqrs";
 
 
 const usersProviders: Provider[] = [UsersRepository, UsersQueryRepository, UsersService];
@@ -66,6 +67,7 @@ const useCases = [CreateUserUseCase, CreateBlogUseCase, GetBlogByIdUseCase, GetA
         MongooseModule.forFeature([
             {name: User.name, schema: UsersEntity},
             {name: Blog.name, schema: BlogEntity}]),
+        CqrsModule,
         UsersModule,
         TestingModule,
         PostsModule,

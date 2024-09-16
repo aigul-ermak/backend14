@@ -23,7 +23,8 @@ import {BlogOutputModel} from "./models/output/blog.output.model";
 import {BasicAuthGuard} from "../../auth/basic-auth.guard";
 import {SortBlogsDto} from "./models/input/sort-blog.input.dto";
 import {GetAllBlogsUseCase} from "../../usecases/getAllBlogsUseCase";
-import {DeleteBlogByIdUseCase} from "../../usecases/deleteBlogByIdUseCase";
+import {DeleteBlogByIdUseCaseCommand} from "../../usecases/deleteBlogByIdUseCase";
+import {CommandBus} from "@nestjs/cqrs";
 
 @Controller('blogs')
 export class BlogsController {
@@ -34,7 +35,7 @@ export class BlogsController {
         private createBlogUseCase: CreateBlogUseCase,
         private getUserByIdUseCase: GetBlogByIdUseCase,
         private getAllBlogsUseCase: GetAllBlogsUseCase,
-        private deleteBlogByIdUseCase: DeleteBlogByIdUseCase,
+        private commandBus: CommandBus,
     ) {
     }
 
@@ -167,7 +168,12 @@ export class BlogsController {
     @Delete(':id')
     @HttpCode(204)
     async deleteBlog(@Param('id') blogId: string): Promise<void> {
-        const result = await this.deleteBlogByIdUseCase.execute(blogId);
+        // const result = await this.deleteBlogByIdUseCase.execute(blogId);
+
+        const result = this.commandBus.execute(
+            new DeleteBlogByIdUseCaseCommand(blogId)
+        );
+
         if (!result) {
             throw new NotFoundException(`Blog with id not found`);
         }
