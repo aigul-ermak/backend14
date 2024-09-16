@@ -33,11 +33,13 @@ import {Blog, BlogEntity} from "./features/blogs/domain/blog.entity";
 import {GetAllBlogsUseCase} from "./features/usecases/getAllBlogsUseCase";
 import {DeleteBlogByIdUseCase} from "./features/usecases/deleteBlogByIdUseCase";
 import {CqrsModule} from "@nestjs/cqrs";
+import {UpdateBlogUseCase} from "./features/usecases/updateBlogUseCase";
 
 
 const usersProviders: Provider[] = [UsersRepository, UsersQueryRepository, UsersService];
 const blogsProviders: Provider[] = [BlogsRepository, BlogsQueryRepository, BlogsService]
-const useCases = [CreateUserUseCase, CreateBlogUseCase, GetBlogByIdUseCase, GetAllBlogsUseCase, DeleteBlogByIdUseCase]
+const useCases = [CreateUserUseCase, CreateBlogUseCase, GetBlogByIdUseCase, GetAllBlogsUseCase,
+    DeleteBlogByIdUseCase, UpdateBlogUseCase]
 
 @Module({
     imports: [

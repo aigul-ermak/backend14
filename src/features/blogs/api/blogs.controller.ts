@@ -25,6 +25,7 @@ import {SortBlogsDto} from "./models/input/sort-blog.input.dto";
 import {GetAllBlogsUseCase} from "../../usecases/getAllBlogsUseCase";
 import {DeleteBlogByIdUseCaseCommand} from "../../usecases/deleteBlogByIdUseCase";
 import {CommandBus} from "@nestjs/cqrs";
+import {UpdateBlogUseCaseCommand} from "../../usecases/updateBlogUseCase";
 
 @Controller('blogs')
 export class BlogsController {
@@ -65,12 +66,9 @@ export class BlogsController {
         @Param('id') id: string,
         @Body() updateBlogDto: UpdateBlogDto,
     ) {
-        // const blog = await this.blogsService.findById(id);
-        // if (!blog) {
-        //   throw new NotFoundException('Blog not found');
-        // }
 
-        return this.blogsService.update(id, updateBlogDto);
+        return this.commandBus.execute(new UpdateBlogUseCaseCommand(id, updateBlogDto));
+        console.log(id)
     }
 
     @Post(':id/posts')
@@ -110,8 +108,6 @@ export class BlogsController {
         @Query('sortBy') sortBy?: string,
         @Query('sortDirection') sortDirection?: string,
     ) {
-        // const page = pageNumber ?? 1;
-        // const size = pageSize ?? 10;
 
         const sort = sortBy ?? 'createdAt';
         const direction = sortDirection?.toLowerCase() === 'asc' ? 'asc' : 'desc';
